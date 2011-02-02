@@ -480,7 +480,7 @@ jQuery(function($) {
 	});
 
 	$.extend(ZeroClipboard, {
-		moviepath: '/js/zeroclipboard/zeroclipboard.swf'
+		moviepath: '/~/js/zeroclipboard/zeroclipboard.swf'
 	});
 	var clipboard = $('#clipboard').zeroclipboard({ hand: true }).
 	mouseover(function() { clipboard.addClass('hover'); }).
