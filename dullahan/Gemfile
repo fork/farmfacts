@@ -1,0 +1,5 @@
+gem 'sinatra-webdav', :git => 'git@github.com:fork/sinatra-webdav.git'
+
+gem 'omniauth'
+gem 'hoptoad_notifier'
+gem 'slim'
