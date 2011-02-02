@@ -182,6 +182,10 @@ a:hover img.hover {
 	min-width: 200px;
 	min-height: 14px;
 }
+.type-select.active {
+	border-left: 2px solid plum;
+	border-bottom: 2px solid plum;
+}
 .type-select label {
 	cursor: pointer;
 }
