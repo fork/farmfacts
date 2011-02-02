@@ -468,11 +468,15 @@ jQuery(function($) {
 
 		if (singular) {
 			menu.addClass('resource');
-			clipboard.zeroclipboard({text: resources[0].path()});
+			setTimeout(function() {
+				clipboard.zeroclipboard({ text: resources[0].path() });
+			}, 100);
 		}
 		else {
 			menu.addClass('resources');
 		}
+	}).bind('deactivate', function() {
+		clipboard.zeroclipboard();
 	});
 
 	doc.click(function(e) {

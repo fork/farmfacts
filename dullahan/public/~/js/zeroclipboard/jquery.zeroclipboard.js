@@ -1,5 +1,14 @@
+/*
+ * Licenses:
+ * zeroclipboard.swf is licensed under the LGPL (see LGPL-License.txt)
+ * jquery.zeroclipboard.js is licensed under the GPL3 (see GPL3-License.txt)
+ *
+ * This heavily modified version of jquery.zeroclipboard.js was inspired by
+ * https://github.com/dudeami/jQuery-ZeroClipboard.
+ */
 (function($) {
 	var zeroclipboard = 'zeroclipboard';
+	var remove        = 'remove';
 	var load          = 'load';
 	var mouseover     = 'mouseover';
 	var mouseout      = 'mouseout';
@@ -42,21 +51,21 @@
 
 				data.ready = true;
 				ZeroClipboard.update(id);
-			} else if (eventName === mouseover) {
-				$$.trigger(mouseover);
-			} else if (eventName === mouseout) {
-				$$.trigger(mouseout);
+			} else if (eventName === 'mouseover') {
+				$$.mouseover();
+			} else if (eventName === 'mouseout') {
+				$$.mouseout();
 				// This is to cover up the bug of dragging the mouse out
 				// of the flash (mainly used when reseting css).
-				if (data.downfix) { $$.trigger(mouseup); }
-			} else if (eventName === mouseup) {
-				$$.trigger(mouseup);
+				if (data.downfix) { $$.mouseup(); }
+			} else if (eventName === 'mouseup') {
+				$$.mouseup();
 				data.downfix = false;
-			} else if (eventName === mousedown) {
+			} else if (eventName === 'mousedown') {
 				data.downfix = true;
-				$$.trigger(mousedown);
+				$$.mousedown();
 			} else if (eventName === 'complete') {
-				$$.trigger('click');
+				$$.click();
 			}
 		},
 		update: function (id) {
@@ -95,9 +104,9 @@
 	this.ZeroClipboard = ZeroClipboard;
 
 	// RADAR this is done later this script again... don't like this hack!
-	// Code borrowed from
+	// Code borrowed from:
 	// http://stackoverflow.com/questions/2200494/jquery-trigger-event-when-an-element-is-removed-from-the-dom
-	var removeEvent = new $.Event('remove');
+	var removeEvent = new $.Event(remove);
 	var __remove = $.fn.remove;
 	$.fn.remove = function() {
 		this.trigger(removeEvent);
@@ -113,7 +122,7 @@
 	});
 
 	// Run the window resize anytime an element is removed
-	$('*').bind('remove', function () { $(window).resize(); });
+	$('*').bind(remove, function () { $(window).resize(); });
 
 	function generateId(options) {
 		options = $.extend({
@@ -225,7 +234,7 @@
 
 				// Add an event to test when the element is destroyed to also
 				// destroy the flash object paired with the element.
-				bind('remove', function () {
+				bind(remove, function () {
 					$$.zeroclipboard({destroy: true});
 				}).
 
