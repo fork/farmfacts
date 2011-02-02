@@ -14,10 +14,7 @@ Vizard is a JavaScript based WYSIWYG editor.
 
 ## TODO
 
-* PLUpload in filemanager (fine tuning)
-* second column in filemanager (needs synchronization)
-* context menus in filemanager (copy, move, ...)
-* bookmarks in filemanager
+See dullahan/README.md and vizard/README.md.
 
 ## Contact
 
