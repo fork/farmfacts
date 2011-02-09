@@ -223,7 +223,7 @@
 		var $ = this.constructor;
 		var garbage = $();
 		this.each(function() {
-			var isGarbage = $(this).data('target').parentNode;
+			var isGarbage = $(this).data('target').parentNode === null;
 			if (isGarbage) { garbage = garbage.add(this); }
 		});
 		return garbage;
