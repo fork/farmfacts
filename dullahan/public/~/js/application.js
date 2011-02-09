@@ -585,16 +585,10 @@ jQuery(function($) {
 		window.open(url);
 	};
 	Controller['text/html'] = function(url) {
-		var host = location.protocol + '//' + location.host;
-		var path = url.slice(host.length);
-
-		window.location = 'http://vizard.fork.de/' + path + '?path=' + url +
-		'&origin='      + host +
-		'&return='      + location.href +
-		'&handler='     + host + '/application/vizard/handler.js' +
-		'&vizardcss='   + host + '/application/vizard/styles.css' +
-		'&cktemplates=' + host + '/application/vizard/templates.js';
+		var path = url.split('/').slice(2);
+		window.open(location.protocol + '//' + vizard + '/' + path);
 	};
+	var vizard = 'vizard.example.de';
 
 	// Load resources on hashchange
 	var disabled = '<option disabled="disabled">Loading...</option>';
