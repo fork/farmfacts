@@ -1,0 +1,94 @@
+/* --------------------------------------------------------------
+
+   reset.css
+   * Resets default browser CSS.
+
+-------------------------------------------------------------- */
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code,
+del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, dialog, figure, footer, header,
+hgroup, nav, section {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	font-family: inherit;
+	vertical-align: baseline;
+}
+
+article, aside, dialog, figure, footer, header,
+hgroup, nav, section {
+	display:block;
+}
+
+body {
+	line-height: 1.5;
+}
+
+/* Tables still need 'cellspacing="0"' in the markup. */
+table { border-collapse: separate; border-spacing: 0; }
+caption, th, td { text-align: left; font-weight: normal; }
+table, td, th { vertical-align: middle; }
+
+/* Remove possible quote marks (") from <q>, <blockquote>. */
+blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+blockquote, q { quotes: "" ""; }
+
+/* Remove annoying border on linked images. */
+a img { border: none; }
+
+
+/* --------------------------------------------------------------
+
+   vizard.css
+   * core Vizard CSS.
+
+-------------------------------------------------------------- */
+
+#display {
+	display: none;
+}
+#overlay {
+	background: url('data:image/gif,GIF89a%01%00%01%00%91%FF%00%FF%FF%FF%00%00%00%C0%C0%C0%00%00%00!%F9%04%01%00%00%02%00%2C%00%00%00%00%01%00%01%00%00%02%02T%01%00%3B') no-repeat;
+}
+#display, #overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+#overlay a {
+	display: block;
+	position: absolute;
+}
+#spinner {
+	display: block;
+	position: absolute;
+	top: 50%;
+	margin-top: -16px;
+	left: 50%;
+	margin-left: -16px;
+}
+
+#toolbar {
+	position: absolute;
+	height: 32px;
+	top: -24px;
+	right: 0;
+	left: 0;
+	padding: 0 4px;
+}
+#toolbar.active {
+	top: 0;
+}
+#toolbar a {
+	display: block;
+	float: left;
+	margin: 2px 4px;
+}
