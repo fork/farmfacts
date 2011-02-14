@@ -1,4 +1,4 @@
-root = File.dirname __FILE__
+root = File.expand_path '..', __FILE__
 
 # RADAR remove this when sinatra natively supports the slim method
 require "#{ root }/lib/sinatra/templates/slim"
