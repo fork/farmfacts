@@ -80,13 +80,14 @@
 		jQuery.ajax(href, {
 			dataType: 'text',
 			success: function(source) {
+				vizard.source = source;
+				vizard.setState(Vizard.LOADED);
 				// This only works for SCRIPT tags with type attribute set:
 				// disable SCRIPTs...
-				source = source.replace(typesSCRIPTs, noSCRIPTs);
+				vizard.source = vizard.source.replace(typesSCRIPTs, noSCRIPTs);
 
-				vizard.setState(Vizard.RENDERING);
 				vizard.document.open();
-				vizard.document.write(source);
+				vizard.document.write(vizard.source);
 				vizard.document.close();
 			}
 		});
@@ -96,7 +97,7 @@
 	}
 	Vizard.INIT        = 'uninitialized';
 	Vizard.LOADING     = 'loading';
-	Vizard.RENDERING   = 'loaded';
+	Vizard.LOADED      = 'loaded';
 	Vizard.INTERACTIVE = 'interactive';
 	Vizard.COMPLETE    = 'complete';
 	Vizard.Wait        = 100;

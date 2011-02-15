@@ -8,6 +8,11 @@ jQuery(function($) {
 	bind('onreadystatechange.vizard', function() {
 		var V = display.data('vizard');
 
+		if (V.readyState === Vizard.LOADED) {
+			// V.source.match(/<!--# include .* -->/);
+			// TODO emulate SSI...
+		}
+
 		if (V.readyState === Vizard.INTERACTIVE) {
 			var timeout;
 
@@ -44,8 +49,6 @@ jQuery(function($) {
 					toolbar.removeClass('active');
 				}, 500);
 			});
-
-			// TODO emulate SSI...
 		}
 
 		if (V.readyState === Vizard.COMPLETE) {
