@@ -351,6 +351,8 @@ jQuery(function($) {
 		return position;
 	}
 
+	function isExpanded() { return $('#container').hasClass('double'); }
+
 	var menu = $('#context-menu').menu({
 		'#get-resource': function() {
 			var column = menu.data('column');
@@ -424,11 +426,93 @@ jQuery(function($) {
 			});
 		},
 		'#copy': function() {
-			// TODO in two column mode:
-			// if resource is visible in alternate column we should do
-			// something about it
+			// FIXME: copy to empty dir doesn't work (no resource to get href)
+			if (!isExpanded()) {
+				alert('Open other column to copy to!');
+				return;
+			}
+
+			var column    = menu.data('column');
+			var resources = menu.data('resources');
+			var sourceBase= resources[0].parent().href;
+			var target    = columns.filter(':not(.focus)');
+			var targetAll = target.data('resources');
+			var targetBase= targetAll[0].parent().href;
+			var targetDir = '/' + targetBase.split('/').slice(3).join('/');
+
+			targetDir = prompt('Copy files to:', targetDir);
+			if (!targetDir) return;
+
+			if (targetDir.slice(0, 1) != '/') {
+				targetBase = sourceBase + targetDir;
+			}
+
+			$.each(resources, function() {
+				var resource    = this;
+				var displayName = resource.displayName;
+				var href        = decodeURIComponent(targetBase);
+
+				href += displayName;
+				if (resource.isCollection()) { href += '/'; }
+
+				var destination = $.extend({}, resource, {
+					displayName: displayName,
+					href: href,
+					lastModified: new Date()
+				});
+
+				resource.copy(destination.href, function() {
+					targetAll.push(destination);
+					target.trigger('sort');
+				}, 1 / 0, false);
+			});
 		},
-		'#move': function() {},
+		'#move': function() {
+			// FIXME: move to empty dir doesn't work (no resource to get href)
+			if (!isExpanded()) {
+				alert('Open other column to move to!');
+				return;
+			}
+
+			var column    = menu.data('column');
+			var resources = menu.data('resources');
+			var all       = column.data('resources');
+			var sourceBase= resources[0].parent().href;
+			var target    = columns.filter(':not(.focus)');
+			var targetAll = target.data('resources');
+			var targetBase= targetAll[0].parent().href;
+			var targetDir = '/' + targetBase.split('/').slice(3).join('/');
+
+			targetDir = prompt('Move files to:', targetDir);
+			if (!targetDir) return;
+
+			if (targetDir.slice(0, 1) != '/') {
+				targetBase = sourceBase + targetDir;
+			}
+
+			$.each(resources, function() {
+				var resource    = this;
+				var displayName = resource.displayName;
+				var href        = decodeURIComponent(targetBase);
+
+				href += displayName;
+				if (resource.isCollection()) { href += '/'; }
+
+				var destination = $.extend({}, resource, {
+					displayName: displayName,
+					href: href,
+					lastModified: new Date()
+				});
+
+				resource.move(destination.href, function() {
+					var index = all.indexOf(resource);
+					all.splice(index, 1);
+					column.trigger('redraw');
+					targetAll.push(destination);
+					target.trigger('sort');
+				}, 1 / 0, false);
+			});
+		},
 		'#rename': function() {
 			// TODO in two column mode:
 			// if resource is visible in alternate column we should do
