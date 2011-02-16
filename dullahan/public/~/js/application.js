@@ -140,6 +140,7 @@ jQuery(function($) {
 			root      = resources.shift();
 
 			column.trigger('sort');
+			column.data('href', root.href);
 
 			refresh.call(column, root, resources);
 		}).
@@ -426,7 +427,6 @@ jQuery(function($) {
 			});
 		},
 		'#copy': function() {
-			// FIXME: copy to empty dir doesn't work (no resource to get href)
 			if (!isExpanded()) {
 				alert('Open other column to copy to!');
 				return;
@@ -434,10 +434,10 @@ jQuery(function($) {
 
 			var column    = menu.data('column');
 			var resources = menu.data('resources');
-			var sourceBase= resources[0].parent().href;
+			var sourceBase= column.data('href');
 			var target    = columns.filter(':not(.focus)');
 			var targetAll = target.data('resources');
-			var targetBase= targetAll[0].parent().href;
+			var targetBase= target.data('href');
 			var targetDir = '/' + targetBase.split('/').slice(3).join('/');
 
 			targetDir = prompt('Copy files to:', targetDir);
@@ -468,7 +468,6 @@ jQuery(function($) {
 			});
 		},
 		'#move': function() {
-			// FIXME: move to empty dir doesn't work (no resource to get href)
 			if (!isExpanded()) {
 				alert('Open other column to move to!');
 				return;
@@ -477,10 +476,10 @@ jQuery(function($) {
 			var column    = menu.data('column');
 			var resources = menu.data('resources');
 			var all       = column.data('resources');
-			var sourceBase= resources[0].parent().href;
+			var sourceBase= column.data('href');
 			var target    = columns.filter(':not(.focus)');
 			var targetAll = target.data('resources');
-			var targetBase= targetAll[0].parent().href;
+			var targetBase= target.data('href');
 			var targetDir = '/' + targetBase.split('/').slice(3).join('/');
 
 			targetDir = prompt('Move files to:', targetDir);
