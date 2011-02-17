@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:fork/sinatra-webdav.git
-  revision: cdb7258e53f6cc42f091848dc7baf734e01382ba
+  revision: fb058fbf06c65c40301cca574999e4580890092f
   specs:
-    sinatra-webdav (0.0.3)
+    sinatra-webdav (0.0.4)
       addressable
       nokogiri
       sinatra
@@ -12,11 +12,11 @@ GEM
     activesupport (3.0.4)
     addressable (2.2.4)
     builder (3.0.0)
-    faraday (0.5.5)
+    faraday (0.5.6)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
       rack (>= 1.1.0, < 2)
-    hoptoad_notifier (2.4.5)
+    hoptoad_notifier (2.4.6)
       activesupport
       builder
     mime-types (1.16)
