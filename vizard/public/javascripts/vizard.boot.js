@@ -9,8 +9,28 @@ jQuery(function($) {
 		var V = display.data('vizard');
 
 		if (V.readyState === Vizard.LOADED) {
-			// V.source.match(/<!--# include .* -->/);
-			// TODO emulate SSI...
+			var includes = V.source.match(/<!-- ?# ?include .*-->/g);
+			var host = Vizard.location.protocol + '//' + Vizard.location.host;
+
+			$.each(includes, function() {
+				var inc = this;
+				var incUrl = inc.match(/="(.*)"/)[1], url;
+
+				if (incUrl.substr(0, 1) == '/') {
+					url = host + incUrl;
+				} else {
+					url = Vizard.location.href.replace(/[^\/]*$/, incUrl);
+				}
+
+				jQuery.ajax(url, {
+					async: false,
+					dataType: 'text',
+					success: function(data) {
+						var html = data + '<!-- end-of src="' + incUrl + '"-->';
+						V.source = V.source.replace(inc, inc + html);
+					}
+				});
+			});
 		}
 
 		if (V.readyState === Vizard.INTERACTIVE) {
@@ -27,9 +47,18 @@ jQuery(function($) {
 
 			toolbar.toolbar([
 				function(e) {
-					// jQuery.post(this.href, {
-					// 	data: V.serialize();
-					// });
+					e.preventDefault();
+
+					jQuery.ajax(this.href, {
+						contentType: 'text/html;charset=utf-8',
+						type: 'PUT',
+						data: V.saveIncludes(V.serialize()),
+						processData: false,
+						dataType: 'text',
+						success: function() {
+							alert('Saved!');
+						}
+					});
 				},
 				function(e) {
 					var stay = V.isModified && !confirm('Are you sure?');

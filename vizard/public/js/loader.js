@@ -54,7 +54,9 @@
 			};
 			Vizard.params = params;
 
-			load(protocol + '//' + host + params['boot-uri']);
+			// vizard.boot.js is this domain so why host?
+			//load(protocol + '//' + host + params['boot-uri']);
+			load(params['boot-uri']);
 		});
 	};
 

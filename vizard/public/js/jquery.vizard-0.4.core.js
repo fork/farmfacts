@@ -107,6 +107,44 @@
 		fn.styleSheets = null;
 		fn.controls    = null;
 
+		fn.saveIncludes = function(serialized) {
+			var includes = this.source.match(/<!-- ?# ?include .*-->/g);
+			var host = Vizard.location.protocol + '//' + Vizard.location.host;
+			var source = serialized;
+
+			for (i in includes) {
+				var inc = includes[i];
+				var incUrl = inc.match(/="(.*)"/)[1], url;
+
+				var marker = '<!-- end-of src="' + incUrl + '"-->';
+				var stop = source.indexOf(marker);
+				if (stop == -1) continue;
+				var start = source.lastIndexOf(inc, stop) + inc.length;
+
+				var toPut = source.slice(start, stop);
+				var toRemove = source.slice(start, stop + marker.length);
+
+				if (incUrl.substr(0, 1) == '/') {
+					url = host + incUrl;
+				} else {
+					url = Vizard.location.href.replace(/[^\/]*$/, incUrl);
+				}
+
+				jQuery.ajax(url, {
+					contentType: 'text/html;charset=utf-8',
+					type: 'PUT',
+					data: toPut,
+					async: false,
+					processData: false,
+					dataType: 'text',
+					success: function() {
+						source = source.replace(toRemove, '');
+					}
+				});
+			}
+			return source;
+		};
+
 		fn.serialize = function() {
 			var serializer = new XMLSerializer();
 			return serializer.serializeToString(this.document.documentElement);
