@@ -1,4 +1,9 @@
 (function(jQuery) {
+	$.entitle = function(title, ownerDocument) {
+		if (typeof(ownerDocument) == 'undefined') ownerDocument = document;
+		ownerDocument.title = title;
+		$('title', ownerDocument).html(title);
+	};
 
 	// script types that are evaluated
 	var typesSCRIPTs = /type=["'](?:text|application)\/(?:x-)?(?:j(?:ava)?|ecma)script["']/g;

@@ -1,3 +1,5 @@
+var CKEDITOR_BASEPATH = '/ckeditor/';
+
 (function() {
 	function Parameters(search) {
 		var pairs = search.slice(1).split('&');
@@ -39,6 +41,8 @@
 		if (!window.jQuery) { return; }
 		clearInterval(interval);
 
+		load('/ckeditor/ckeditor.js');
+		load('/ckeditor/adapters/jquery.js');
 		load('/js/jquery.simple-toolbar.js');
 		load('/js/jquery.vizard-0.4.core.js').ready(function() {
 			var path = '/' + location.pathname.split('/').slice(2).join('/');
