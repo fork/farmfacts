@@ -668,10 +668,10 @@ jQuery(function($) {
 		window.open(url);
 	};
 	Controller['text/html'] = function(url) {
-		var path = url.split('/').slice(2);
+		var path = url.split('/').slice(2).join('/');
 		window.open(location.protocol + '//' + vizard + '/' + path);
 	};
-	var vizard = 'vizard.example.de';
+	var vizard = 'localhost:3001';
 
 	// Load resources on hashchange
 	var disabled = '<option disabled="disabled">Loading...</option>';
