@@ -77,6 +77,22 @@ a img { border: none; }
 .layer-container {
 	position: absolute;
 }
+.control-hover {
+	opacity:0.5;
+	filter:alpha(opacity=50);
+	background-color: rgb(255, 0, 0);
+}
+.table-editor {
+	background-color: white;
+}
+.table-editor td {
+	cursor: pointer;
+}
+.table-editor input {
+	background-color: transparent;
+	border: none;
+	outline: none;
+}
 .prompt {
 	background: white;
 	background-color: #333;
