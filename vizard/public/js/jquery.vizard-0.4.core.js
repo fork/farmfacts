@@ -16,6 +16,7 @@
 
 		vizard.document = display.contents().get(0);
 		vizard.display  = display.data('vizard', vizard);
+		vizard.baseHREF    = href;
 
 		var $ = Vizard.$.sub();
 		$.fn.init = function(selector, context) {
@@ -90,6 +91,7 @@
 				// This only works for SCRIPT tags with type attribute set:
 				// disable SCRIPTs...
 				vizard.source = vizard.source.replace(typesSCRIPTs, noSCRIPTs);
+				vizard.source = vizard.insertBASE(vizard.source);
 
 				vizard.document.open();
 				vizard.document.write(vizard.source);
@@ -165,6 +167,14 @@
 				return xmlDoc.documentElement.xml;
 			};
 		}
+
+		fn.insertBASE = function(html) {
+			var broken = html.split('</title>', 2),
+			    tagBASE = '<base href="' + this.baseHREF + '" />';
+
+			broken[1] = tagBASE + broken[1];
+			return broken.join('</title>');
+		};
 
 		fn.makeSnapshot = function() {
 			return this.document.documentElement.innerHTML;
