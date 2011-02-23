@@ -226,7 +226,7 @@ jQuery(function($) {
 		}).
 		dblclick(function(e) {
 			var isAnchor = e.target.tagName === 'A';
-			if (isAnchor) { 
+			if (isAnchor) {
 				var rows     = tbody.children();
 				var row      = rows.has(e.target);
 				var index    = rows.index(row);
@@ -713,6 +713,7 @@ jQuery(function($) {
 	log.COPY = function(msg, now) { this.push('copy', msg, now); };
 	log.MOVE = function(msg, now) { this.push('move', msg, now); };
 	log.PROPFIND = function(msg, now) { this.push('propfind', msg, now); };
+	log.SEARCH = function(msg, now) { this.push('search', msg, now); };
 
 	win.trigger('hashchange');
 });
