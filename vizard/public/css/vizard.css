@@ -87,6 +87,7 @@ a img { border: none; }
 }
 .table-editor td {
 	cursor: pointer;
+	padding: 5px;
 }
 .table-editor input {
 	background-color: transparent;
