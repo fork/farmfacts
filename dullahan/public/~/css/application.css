@@ -36,6 +36,11 @@ body.double {
 	filter:alpha(opacity=100);
 }
 
+/* prevent plupload to get in between on upper left corner */
+#first-plupload, #second-plupload {
+	overflow:hidden;
+}
+
 #first, .column .margin {
 	left: 0;
 }
