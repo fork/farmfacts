@@ -85,6 +85,9 @@
 		proto.move = function move(destination, callback, depth, overwrite) {
 			WebDAV.MOVE(this.href, destination, callback, depth, overwrite);
 		};
+		proto.mkcol = function mkcol(callback) {
+			WebDAV.MKCOL(this.href, callback);
+		};
 		proto['delete'] = function(callback) {
 			WebDAV.DELETE(this.href, callback);
 		};

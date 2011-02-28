@@ -141,6 +141,7 @@ jQuery(function($) {
 
 			column.trigger('sort');
 			column.data('href', root.href);
+			column.data('root', root);
 
 			refresh.call(column, root, resources);
 		}).
@@ -540,6 +541,33 @@ jQuery(function($) {
 				}, 1 / 0, false);
 			}
 		},
+		'#mkcol': function() {
+			// TODO in two column mode:
+			// if resource is visible in alternate column we should do
+			// something about it
+
+			var column   = menu.data('column');
+			var all      = column.data('resources');
+			var root     = column.data('root');
+
+			var displayName = prompt('Enter directory name:');
+			if (displayName) {
+				var href = decodeURIComponent(root.href);
+				href += displayName;
+				if (!displayName.match(/\/$/)) { href += '/'; }
+
+				var destination = $.extend({}, root, {
+					displayName: displayName,
+					href: href,
+					lastModified: new Date()
+				});
+
+				destination.mkcol(function() {
+					all.push(destination);
+					column.trigger('sort');
+				});
+			}
+		},
 		'#get-info': function() {
 			// emit PROPFINDs
 		}
@@ -714,6 +742,7 @@ jQuery(function($) {
 	log.MOVE = function(msg, now) { this.push('move', msg, now); };
 	log.PROPFIND = function(msg, now) { this.push('propfind', msg, now); };
 	log.SEARCH = function(msg, now) { this.push('search', msg, now); };
+	log.MKCOL = function(msg, now) { this.push('mkcol', msg, now); };
 
 	win.trigger('hashchange');
 });
