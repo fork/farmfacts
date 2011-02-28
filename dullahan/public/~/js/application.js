@@ -338,6 +338,39 @@ jQuery(function($) {
 			if (up.state !== plupload.STARTED) { up.start(); }
 		});
 		uploader.init();
+
+		$('.location .directory-controls').menu({
+			'.mkcol': function() {
+				// TODO in two column mode:
+				// if resource is visible in alternate column we should do
+				// something about it
+
+				var column   = columns.filter('.focus');
+				var all      = column.data('resources');
+				var root     = column.data('root');
+
+				var displayName = prompt('Enter directory name:');
+				if (displayName) {
+					var href = decodeURIComponent(root.href);
+					href += displayName;
+					if (!displayName.match(/\/$/)) { href += '/'; }
+
+					var destination = $.extend({}, root, {
+						displayName: displayName,
+						href: href,
+						lastModified: new Date()
+					});
+
+					destination.mkcol(function() {
+						all.push(destination);
+						column.trigger('sort');
+					});
+				}
+			},
+			'.html4upload': function() {
+				// TODO: make this work
+			}
+		});
 	});
 
 	// moves menu to another position if it'd overflow the window limits
@@ -539,33 +572,6 @@ jQuery(function($) {
 					all[index] = destination;
 					column.trigger('sort');
 				}, 1 / 0, false);
-			}
-		},
-		'#mkcol': function() {
-			// TODO in two column mode:
-			// if resource is visible in alternate column we should do
-			// something about it
-
-			var column   = menu.data('column');
-			var all      = column.data('resources');
-			var root     = column.data('root');
-
-			var displayName = prompt('Enter directory name:');
-			if (displayName) {
-				var href = decodeURIComponent(root.href);
-				href += displayName;
-				if (!displayName.match(/\/$/)) { href += '/'; }
-
-				var destination = $.extend({}, root, {
-					displayName: displayName,
-					href: href,
-					lastModified: new Date()
-				});
-
-				destination.mkcol(function() {
-					all.push(destination);
-					column.trigger('sort');
-				});
 			}
 		},
 		'#get-info': function() {

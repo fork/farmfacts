@@ -177,6 +177,15 @@ a:hover img.hover {
 	padding: 2px 5px;
 }
 
+.directory-controls {
+	position:absolute;
+	margin: 0 0 0 200px;
+}
+
+.directory-controls input {
+	margin: 0;
+}
+
 .type-select {
 	background-color: white;
 	position: absolute;
