@@ -153,6 +153,10 @@ jQuery(function($) {
 			}
 		});
 
+		utils.fuzzy(column.find('.type-select .pattern'), {
+			filter: '#' + column.attr('id') + ' tbody tr'
+		});
+
 		var anchors = column.find('th a');
 		column.find('th').
 		click(function(e) {

@@ -71,7 +71,7 @@
 
 	// takes integer number and returns something approximating scientific
 	// notation
-	function normalize(magnitude, div) {            
+	function normalize(magnitude, div) {
 		var q = Math.floor(magnitude / div);
 		var pow = (q) ? 1 : 0;
 
@@ -147,5 +147,33 @@
 		return [delta, units, "ago"].join(" ");
 	};
 	utils.relativeTime = relativeTime;
+
+	function fuzzy(input, opts) {
+		var defaults = {
+			filter: 'tr',
+			hit: function(e) { e.style.display = 'table-row'; },
+			miss: function(e) { e.style.display = 'none'; }
+		};
+		opts = $.extend({}, defaults, opts || {});
+
+		return input.keydown(function(e) {
+			if (!e.metaKey && !e.altKey && input.hasClass('loader'))
+				input.css({'background': 'url(/images/loader.gif) no-repeat right'});
+		})
+		.blur(function(e) {
+			if (input.hasClass('loader')) input.css({'background': ''});
+		})
+		.keyup(function(e) {
+			var term = input.val(),
+				exp = new RegExp(term.split('').join('.*'), 'i');
+
+			$(opts.filter).each(function() {
+				var text = $(this).text().replace(/\s+/g, ' ');
+				opts[text.match(exp)? 'hit' : 'miss'](this);
+			});
+			if (input.hasClass('loader')) input.css({'background': ''});
+		});
+	};
+	utils.fuzzy = fuzzy;
 
 })();
