@@ -284,6 +284,7 @@ jQuery(function($) {
 		var uploader = new plupload.Uploader({
 			container: column.attr('id') + '-plupload',
 			runtimes: 'html5,html4',
+			browse_button: column.attr('id') + '-html4upload',
 			drop_element: column.attr('id')
 		});
 		//uploader.bind('Error', function(up, err) { console.log('error'); });
@@ -370,9 +371,6 @@ jQuery(function($) {
 						column.trigger('sort');
 					});
 				}
-			},
-			'.html4upload': function() {
-				// TODO: make this work
 			}
 		});
 	});
