@@ -592,8 +592,6 @@ jQuery(function($) {
 		else {
 			menu.addClass('resources');
 		}
-	}).bind('deactivate', function() {
-		clipboard.zeroclipboard();
 	});
 
 	doc.click(function(e) {
