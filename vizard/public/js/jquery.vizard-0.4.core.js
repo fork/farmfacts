@@ -97,6 +97,11 @@
 				vizard.document.write(vizard.source);
 				vizard.document.close();
 			},
+			// TODO: check for status code somehow. statusCode() doesnt work...
+			error: function() {
+				var host = Vizard.location.protocol + '//' + Vizard.location.host;
+				location.href = host + '/auth/cas';
+			},
             xhrFields: { withCredentials: true }
 		});
 		vizard.setState(Vizard.LOADING);
