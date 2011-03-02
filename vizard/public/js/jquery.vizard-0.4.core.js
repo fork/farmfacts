@@ -96,7 +96,8 @@
 				vizard.document.open();
 				vizard.document.write(vizard.source);
 				vizard.document.close();
-			}
+			},
+            xhrFields: { withCredentials: true }
 		});
 		vizard.setState(Vizard.LOADING);
 

@@ -22,7 +22,7 @@ var CKEDITOR_BASEPATH = '/ckeditor/';
 	var params   = new Parameters(location.search);
 
 	var src = protocol + '//ajax.googleapis.com';
-	    src += '/ajax/libs/jquery/1.5.0/jquery.min.js';
+	    src += '/ajax/libs/jquery/1.5.1/jquery.min.js';
 
 	var script  = document.createElement('script');
 	script.type = 'text/javascript';
