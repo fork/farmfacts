@@ -583,6 +583,7 @@ jQuery(function($) {
 		var resources = menu.data('resources');
 		var singular  = resources.length === 1;
 
+		clipboard.css({width: 'auto', height: 'auto'});
 		menu.removeClass('resources resource');
 
 		if (singular) {
@@ -594,6 +595,9 @@ jQuery(function($) {
 		else {
 			menu.addClass('resources');
 		}
+	}).bind('deactivate', function() {
+		clipboard.css({width: 1, height: 1});
+		$(window).resize();
 	});
 
 	doc.click(function(e) {

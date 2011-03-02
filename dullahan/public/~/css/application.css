@@ -101,6 +101,12 @@ body.double {
 	color: white;
 }
 
+/*IE7 THROWS ERROR IF CLIPBOARD HAS NO DIMENSIONS...*/
+#context-menu #clipboard {
+	width: 1px;
+	height: 1px;
+}
+
 .double #duplicate,
 .single #copy,
 .resources .resource,
