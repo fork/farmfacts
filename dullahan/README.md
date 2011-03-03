@@ -15,9 +15,7 @@ Then start a Rack compatible server of your choice, mine was:
 
 ## TODO
 
-* PLUpload in filemanager (fine tuning)
 * second column in filemanager (needs synchronization)
-* context menus in filemanager (copy, move, ...)
 * bookmarks in filemanager
 
 ## Contact
