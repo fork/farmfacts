@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:fork/sinatra-webdav.git
-  revision: 2d3ac60be2dbe25f15fd0b4bfd722671a89b4048
+  revision: be78807e26fdba5827ec7a00df7eb4c20d2192b1
   specs:
-    sinatra-webdav (0.1.0)
+    sinatra-webdav (0.1.1)
       addressable
       nokogiri
       sinatra
