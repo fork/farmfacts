@@ -13,6 +13,14 @@
 		resource.contentLength = p.find('getcontentlength').text() * 1;
 		resource.lastModified  = new Date(p.find('getlastmodified').text());
 
+		var collection = p.find('resourcetype').contents().length > 0;
+		resource.isCollection = function isCollection() {
+			return collection;
+		};
+		if (resource.isCollection()) {
+			resource.contentType = 'directory/directory';
+		}
+
 		return resource;
 	}
 	(function(proto) {
