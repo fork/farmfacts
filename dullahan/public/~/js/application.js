@@ -350,6 +350,8 @@ jQuery(function($) {
 				// if resource is visible in alternate column we should do
 				// something about it
 
+				// set active column if other one was active
+				this.parents('.column').click();
 				var column   = columns.filter('.focus');
 				var all      = column.data('resources');
 				var root     = column.data('root');
@@ -734,6 +736,10 @@ jQuery(function($) {
 	//	console.log(xhr);
 	//}).
 	ajaxComplete(function(e, xhr, opts) {
+		if (xhr.status == 500) {
+			var win = window.open();
+			win.document.write(xhr.response);
+		}
 		log[opts.type](opts.url + ' => ' + xhr.statusText);
 	}).
 	dblclick(function() {

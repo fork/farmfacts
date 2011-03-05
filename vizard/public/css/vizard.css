@@ -82,6 +82,9 @@ a img { border: none; }
 	filter:alpha(opacity=50);
 	background-color: rgb(255, 0, 0);
 }
+.navigation-editor {
+	background-color: white;
+}
 .table-editor {
 	background-color: white;
 }
