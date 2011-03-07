@@ -156,10 +156,7 @@
 		};
 		opts = $.extend({}, defaults, opts || {});
 
-		return input.keydown(function(e) {
-			if (!e.metaKey && !e.altKey && input.hasClass('loader'))
-				input.css({'background': 'url(/images/loader.gif) no-repeat right'});
-		})
+		return input
 		.blur(function(e) {
 			if (input.hasClass('loader')) input.css({'background': ''});
 		})
@@ -171,7 +168,6 @@
 				var text = $(this).text().replace(/\s+/g, ' ');
 				opts[text.match(exp)? 'hit' : 'miss'](this);
 			});
-			if (input.hasClass('loader')) input.css({'background': ''});
 		});
 	};
 	utils.fuzzy = fuzzy;
