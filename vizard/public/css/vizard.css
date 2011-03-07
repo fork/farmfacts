@@ -76,17 +76,12 @@ a img { border: none; }
 }
 .layer-container {
 	position: absolute;
+	background-color: white;
 }
 .control-hover {
 	opacity:0.5;
 	filter:alpha(opacity=50);
 	background-color: rgb(255, 0, 0);
-}
-.navigation-editor {
-	background-color: white;
-}
-.table-editor {
-	background-color: white;
 }
 .table-editor td {
 	cursor: pointer;
