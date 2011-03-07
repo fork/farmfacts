@@ -150,6 +150,7 @@ jQuery(function($) {
 		click(function() {
 			var focused = column.is('.focus');
 			if (!focused) {
+				// TODO trigger hash change
 				columns.removeClass('focus');
 				column.addClass('focus');
 			}
@@ -586,6 +587,10 @@ jQuery(function($) {
 	}).bind('activate', function() {
 		var resources = menu.data('resources');
 		var singular  = resources.length === 1;
+
+		menu.data('column').click();
+
+		// TODO display COPY and MOVE only in two column mode.
 
 		clipboard.css({width: 'auto', height: 'auto'});
 		menu.removeClass('resources resource');
