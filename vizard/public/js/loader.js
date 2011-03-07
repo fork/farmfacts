@@ -3,6 +3,8 @@
 		var pairs = search.slice(1).split('&');
 		var param, value;
 
+		if (search === '') { return this; }
+
 		for (var i = 0; i < pairs.length; i++) {
 			param = pairs[i].split('=', 1);
 			param = decodeURIComponent(param);
@@ -28,7 +30,7 @@
 
 	document.body.appendChild(script);
 
-	function load(src) {
+	function require(src) {
 		var script = $('<script type="text/javascript">').attr('src', src);
 		$('body').append(script);
 
@@ -39,17 +41,11 @@
 		if (!window.jQuery) { return; }
 		clearInterval(interval);
 
-		load(protocol + '//ajax.googleapis.com' +
+		require(protocol + '//ajax.googleapis.com' +
 			'/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js');
 
-		// TODO: put this in vizard.boot.js somehow...
-		// FIXME: CKEDITOR undefined in ff
-		var CKEDITOR_BASEPATH = protocol + '//' + host +'/ckeditor/';
-		load(protocol + '//' + host + '/ckeditor/ckeditor.js');
-		load(protocol + '//' + host + '/ckeditor/adapters/jquery.js');
-
-		load('/js/jquery.simple-toolbar.js');
-		load('/js/jquery.vizard-0.4.core.js').ready(function() {
+		require('/js/jquery.simple-toolbar.js');
+		require('/js/jquery.vizard-0.4.core.js').ready(function() {
 			var path = '/' + location.pathname.split('/').slice(2).join('/');
 
 			Vizard.location = {
@@ -63,7 +59,7 @@
 			};
 			Vizard.params = params;
 
-			load(protocol + '//' + host + params['boot-uri']);
+			require(protocol + '//' + host + params['boot-uri']);
 		});
 	};
 
@@ -71,6 +67,6 @@
 	var interval = setInterval(boot, 25);
 
 	// export load function
-	this.load = load;
+	this.require = require;
 
 })();
