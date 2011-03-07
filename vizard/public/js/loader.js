@@ -39,6 +39,9 @@
 		if (!window.jQuery) { return; }
 		clearInterval(interval);
 
+		load(protocol + '//ajax.googleapis.com' +
+			'/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js');
+
 		// TODO: put this in vizard.boot.js somehow...
 		// FIXME: CKEDITOR undefined in ff
 		var CKEDITOR_BASEPATH = protocol + '//' + host +'/ckeditor/';
