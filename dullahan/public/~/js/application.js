@@ -47,7 +47,9 @@ jQuery(function($) {
 			var anchor = $('<A>').text(abbr).
 			             attr({href: this.href, title: this.displayName});
 			var types  = this.contentType.
-			             replace(/\./g, '-').split('/').join(' ');
+			             replace(/\./g, '-'). // replace non-selectable
+			             replace(/\+/, '/').  // allow application/recipe+xml
+			             split('/').join(' ');
 			var row    = Row(types).append(
 				Column(anchor, 'name'),
 				Column(timeFormatter(this.lastModified), 'mtime'),
@@ -66,7 +68,7 @@ jQuery(function($) {
 
 		// make them unique
 		$.each(resources, function() {
-			var props = this.contentType.split('/');
+			var props = this.contentType.replace(/\+/, '/').split('/');
 			var group = props[0];
 			var both  = props.join(' ');
 			if (!types.hasOwnProperty(group)) {
