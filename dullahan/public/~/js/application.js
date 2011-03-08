@@ -159,10 +159,12 @@ jQuery(function($) {
 			column.trigger('focus');
 		});
 
+		// TODO make fuzzy a jquery method
 		utils.fuzzy(column.find('.type-select .pattern'), {
 			filter: '#' + column.attr('id') + ' tbody tr td.name',
 			hit: function(td) { td.parentNode.style.display = 'table-row'; },
 			miss: function(td) { td.parentNode.style.display = 'none'; }
+			// TODO set Filter label to Some Files...
 		});
 
 		var anchors = column.find('th a');
