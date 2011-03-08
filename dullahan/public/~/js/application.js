@@ -152,8 +152,7 @@ jQuery(function($) {
 			if (!focused) {
 				columns.removeClass('focus');
 				column.addClass('focus');
-				
-				// TODO trigger hash change
+				if (root) { $.bbq.pushState({ url: root.href }); }
 			}
 		}).
 		click(function() {
@@ -730,6 +729,7 @@ jQuery(function($) {
 	win.bind('hashchange', function(e) {
 		var column = $('.focus');
 		var url = $.bbq.getState('url');
+		if (column.data('href') === url) return;
 
 		column.find('.breadcrumb').html(disabled);
 
