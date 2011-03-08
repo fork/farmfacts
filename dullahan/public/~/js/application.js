@@ -704,6 +704,7 @@ jQuery(function($) {
 		$('#container').toggleClass('single double');
 
 		if (visible) {
+			forceChange = true;
 			win.trigger('hashchange');
 		}
 
@@ -733,6 +734,7 @@ jQuery(function($) {
 		var url = $.bbq.getState('url');
 		if (column.data('href') === url) {
 			if (!forceChange) { return; }
+			forceChange = false;
 		}
 
 		column.find('.breadcrumb').html(disabled);
@@ -777,5 +779,4 @@ jQuery(function($) {
 	log.MKCOL = function(msg, now) { this.push('mkcol', msg, now); };
 
 	win.trigger('hashchange');
-	forceChange = false;
 });
