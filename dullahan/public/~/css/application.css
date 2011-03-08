@@ -105,7 +105,9 @@ body.double {
 .double #duplicate,
 .single #copy,
 .resources .resource,
-.resource .resources {
+.resource .resources,
+.single .double,
+.double .single {
 	display: none;
 }
 

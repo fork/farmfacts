@@ -147,13 +147,17 @@ jQuery(function($) {
 
 			refresh.call(column, root, resources);
 		}).
-		click(function() {
+		bind('focus', function(e) {
 			var focused = column.is('.focus');
 			if (!focused) {
-				// TODO trigger hash change
 				columns.removeClass('focus');
 				column.addClass('focus');
+				
+				// TODO trigger hash change
 			}
+		}).
+		click(function() {
+			column.trigger('focus');
 		});
 
 		utils.fuzzy(column.find('.type-select .pattern'), {
@@ -585,15 +589,14 @@ jQuery(function($) {
 			// emit PROPFINDs
 		}
 	}).bind('activate', function() {
+		var half      = menu.data('column').trigger('focus').hasClass('half');
 		var resources = menu.data('resources');
 		var singular  = resources.length === 1;
 
-		menu.data('column').click();
-
-		// TODO display COPY and MOVE only in two column mode.
-
 		clipboard.css({width: 'auto', height: 'auto'});
-		menu.removeClass('resources resource');
+		menu.removeClass('resources resource single double');
+
+		menu.addClass(half ? 'double' : 'single');
 
 		if (singular) {
 			menu.addClass('resource');
