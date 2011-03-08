@@ -41,9 +41,6 @@
 		if (!window.jQuery) { return; }
 		clearInterval(interval);
 
-		require(protocol + '//ajax.googleapis.com' +
-			'/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js');
-
 		require('/js/jquery.simple-toolbar.js');
 		require('/js/jquery.vizard-0.4.core.js').ready(function() {
 			var path = '/' + location.pathname.split('/').slice(2).join('/');
