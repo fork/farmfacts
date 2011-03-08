@@ -1,5 +1,5 @@
 jQuery(function($) {
-	var win = $(window), doc = $(document);
+	var win = $(window), doc = $(document), forceChange = true;
 
 	var OPTION = $('<option>');
 	function Option(text, value, selected) {
@@ -521,14 +521,14 @@ jQuery(function($) {
 				return;
 			}
 
-			var column    = menu.data('column');
-			var resources = menu.data('resources');
-			var all       = column.data('resources');
-			var sourceBase= column.data('href');
-			var target    = columns.filter(':not(.focus)');
-			var targetAll = target.data('resources');
-			var targetBase= target.data('href');
-			var targetDir = '/' + targetBase.split('/').slice(3).join('/');
+			var column     = menu.data('column');
+			var resources  = menu.data('resources');
+			var all        = column.data('resources');
+			var sourceBase = column.data('href');
+			var target     = columns.filter(':not(.focus)');
+			var targetAll  = target.data('resources');
+			var targetBase = target.data('href');
+			var targetDir  = '/' + targetBase.split('/').slice(3).join('/');
 
 			targetDir = prompt('Move files to:', targetDir);
 			if (!targetDir) return;
@@ -731,7 +731,9 @@ jQuery(function($) {
 	win.bind('hashchange', function(e) {
 		var column = $('.focus');
 		var url = $.bbq.getState('url');
-		if (column.data('href') === url) return;
+		if (column.data('href') === url) {
+			if (!forceChange) { return; }
+		}
 
 		column.find('.breadcrumb').html(disabled);
 
@@ -775,4 +777,5 @@ jQuery(function($) {
 	log.MKCOL = function(msg, now) { this.push('mkcol', msg, now); };
 
 	win.trigger('hashchange');
+	forceChange = false;
 });
