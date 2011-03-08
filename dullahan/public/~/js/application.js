@@ -161,7 +161,7 @@ jQuery(function($) {
 		});
 
 		utils.fuzzy(column.find('.type-select .pattern'), {
-			filter: '#' + column.attr('id') + ' tbody tr'
+			filter: '#' + column.attr('id') + ' tbody tr td.name'
 		});
 
 		var anchors = column.find('th a');
