@@ -308,11 +308,11 @@ jQuery(function($) {
 				log.POST(message + ' => Created', now);
 
 				if (file.href === root.href) {
-					var resource;
+					var resource, undef;
 
 					$.each(resources, function() {
 						if (this.displayName === file.name) { resource = this; }
-						return !!resource;
+						return resource === undef;
 					});
 
 					if (resource) {
