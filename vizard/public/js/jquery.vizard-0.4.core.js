@@ -160,7 +160,9 @@
 
 		fn.serialize = function() {
 			var serializer = new XMLSerializer();
-			return serializer.serializeToString(this.document.documentElement);
+			//return serializer.serializeToString(this.document.documentElement);
+			// WE ALSO NEED THE DOCTYPE / CHECK IE VERSION BELOW!!!
+			return serializer.serializeToString(this.document);
 		};
 
 		if (jQuery.browser.msie) { // ...AAAARGGGHHH!
