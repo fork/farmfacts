@@ -741,7 +741,7 @@ jQuery(function($) {
 
 		WebDAV.PROPFIND(url, function(multistatus) {
 			var resources = [];
-			$('response', multistatus).each(function() {
+			$('D\\:response, response', multistatus).each(function() {
 				var resource = new WebDAV.Resource(this);
 				resources.push(resource);
 			});
