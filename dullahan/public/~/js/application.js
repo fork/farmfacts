@@ -430,6 +430,7 @@ jQuery(function($) {
 			// TODO on 412 confirm overwrite and try again...
 			resource[verb.toLowerCase()](destination.href, function() {
 				targetColumn.data('resources').push(destination);
+				sourceColumn.trigger('sort');
 				targetColumn.trigger('sort');
 			}, 1 / 0, false);
 		}
