@@ -402,6 +402,71 @@ jQuery(function($) {
 
 	function isExpanded() { return $('#container').hasClass('double'); }
 
+	function transfer(verb, menu) {
+		var sourceColumn = menu.data('column'),
+		    resources    = menu.data('resources'),
+		    countdown    = length = resources.length,
+		    sourceBase   = sourceColumn.data('href');
+
+		var targetColumn = columns.not('.focus'),
+		    targetBase   = targetColumn.data('href'),
+		    targetHost   = targetBase.split('/').slice(0, 3).join('/'),
+		    targetDir    = '/' + targetBase.split('/').slice(3).join('/');
+
+		function expandPath(path) {
+			if (path.slice(0, 1) != '/') {
+				return sourceBase + path;
+			} else {
+				return targetHost + path;
+			}
+		}
+		function transferTo(resource, href, displayName) {
+			var destination = $.extend({}, resource, {
+				displayName: displayName,
+				href: href,
+				lastModified: new Date()
+			});
+
+			// TODO on 412 confirm overwrite and try again...
+			resource[verb.toLowerCase()](destination.href, function() {
+				targetColumn.data('resources').push(destination);
+				targetColumn.trigger('sort');
+			}, 1 / 0, false);
+		}
+
+		if (length == 1) {
+			var resource = resources[0];
+
+			targetPath = targetDir + resource.displayName;
+			targetPath = prompt(verb + ' file to:', targetPath);
+			if (!targetPath) return;
+
+			href = expandPath(targetPath);
+
+			var displayName = href.split('/').pop(); // extract new displayName
+			if (resource.isCollection()) { href += '/'; }
+
+			copyTo(resource, href, displayName);
+		} else {
+			targetDir = prompt(verb + ' files to:', targetDir);
+			// canceled
+			if (!targetDir) { return; }
+
+			targetBase = expandPath(targetDir);
+
+			resources.each(function() {
+				var resource    = this,
+				    displayName = resource.displayName,
+				    href        = decodeURIComponent(targetBase);
+
+				href += displayName;
+				if (resource.isCollection()) { href += '/'; }
+
+				copyTo(resource, href, displayName);
+			});
+		}
+	}
+
 	var menu = $('#context-menu').menu({
 		'#get-resource': function() {
 			var column = menu.data('column');
@@ -475,112 +540,10 @@ jQuery(function($) {
 			});
 		},
 		'#copy': function() {
-			var sourceColumn = menu.data('column'),
-			    resources    = menu.data('resources'),
-			    countdown    = length = resources.length,
-			    sourceBase   = sourceColumn.data('href');
-
-			if (length === 0) { return; }
-
-			var targetColumn = columns.not('.focus'),
-			    targetBase   = targetColumn.data('href'),
-			    targetHost   = targetBase.split('/').slice(0, 3).join('/'),
-			    targetDir    = '/' + targetBase.split('/').slice(3).join('/');
-
-			function expandPath(path) {
-				if (path.slice(0, 1) != '/') { return sourceBase + path; }
-				else { return targetHost + path; }
-			}
-			function copyTo(resource, href, displayName) {
-				var destination = $.extend({}, resource, {
-					displayName: displayName,
-					href: href,
-					lastModified: new Date()
-				});
-
-				// TODO on 412 confirm overwrite and try again...
-				resource.copy(destination.href, function() {
-					targetColumn.data('resources').push(destination);
-					targetColumn.trigger('sort');
-				}, 1 / 0, false);
-			}
-
-			if (length == 1) {
-				var resource = resources[0];
-
-				targetPath = targetDir + resource.displayName;
-				targetPath = prompt('Copy file to:', targetPath);
-				if (!targetPath) return;
-
-				href = expandPath(targetPath);
-
-				var displayName = href.split('/').pop(); // extract new displayName
-				if (resource.isCollection()) { href += '/'; }
-
-				copyTo(resource, href, displayName);
-			} else {
-				targetDir = prompt('Copy files to:', targetDir);
-				// canceled
-				if (!targetDir) { return; }
-
-				targetBase = expandPath(targetDir);
-
-				$.each(resources, function() {
-					var resource    = this,
-					    displayName = resource.displayName,
-					    href        = decodeURIComponent(targetBase);
-
-					href += displayName;
-					if (resource.isCollection()) { href += '/'; }
-
-					copyTo(resource, href, displayName);
-				});
-			}
+			transfer('copy', menu);
 		},
 		'#move': function() {
-			if (!isExpanded()) {
-				alert('Open other column to move to!');
-				return;
-			}
-
-			var column     = menu.data('column');
-			var resources  = menu.data('resources');
-			var all        = column.data('resources');
-			var sourceBase = column.data('href');
-			var target     = columns.filter(':not(.focus)');
-			var targetAll  = target.data('resources');
-			var targetBase = target.data('href');
-			var targetDir  = '/' + targetBase.split('/').slice(3).join('/');
-
-			targetDir = prompt('Move files to:', targetDir);
-			if (!targetDir) return;
-
-			if (targetDir.slice(0, 1) != '/') {
-				targetBase = sourceBase + targetDir;
-			}
-
-			$.each(resources, function() {
-				var resource    = this;
-				var displayName = resource.displayName;
-				var href        = decodeURIComponent(targetBase);
-
-				href += displayName;
-				if (resource.isCollection()) { href += '/'; }
-
-				var destination = $.extend({}, resource, {
-					displayName: displayName,
-					href: href,
-					lastModified: new Date()
-				});
-
-				resource.move(destination.href, function() {
-					var index = all.indexOf(resource);
-					all.splice(index, 1);
-					column.trigger('redraw');
-					targetAll.push(destination);
-					target.trigger('sort');
-				}, 1 / 0, false);
-			});
+			transfer('move', menu);
 		},
 		'#rename': function() {
 			// TODO in two column mode:
