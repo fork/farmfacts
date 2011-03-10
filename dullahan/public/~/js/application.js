@@ -308,9 +308,9 @@ jQuery(function($) {
 				log.POST(message + ' => Created', now);
 
 				if (file.href === root.href) {
-					var resource, undef;
-					var extname = file.name.replace(/^.+\.([^.]+)/, '$1');
-					var type = plupload.mimeTypes[extname];
+					var resource, undef,
+					    extname = file.name.replace(/^.+\.([^.]+)/, '$1'),
+					    type    = plupload.mimeTypes[extname];
 
 					$.each(resources, function() {
 						if (this.displayName === file.name) { resource = this; }
