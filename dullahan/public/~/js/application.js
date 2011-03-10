@@ -540,10 +540,10 @@ jQuery(function($) {
 			});
 		},
 		'#copy': function() {
-			transfer('copy', menu);
+			transfer('Copy', menu);
 		},
 		'#move': function() {
-			transfer('move', menu);
+			transfer('Move', menu);
 		},
 		'#rename': function() {
 			// TODO in two column mode:
