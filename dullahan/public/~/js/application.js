@@ -429,8 +429,15 @@ jQuery(function($) {
 
 			// TODO on 412 confirm overwrite and try again...
 			resource[verb.toLowerCase()](destination.href, function() {
-				targetColumn.data('resources').push(destination);
+				if (verb === 'Move') {
+					var sourceResources = sourceColumn.data('resources'),
+					    resourceIndex   = sourceResources.indexOf(resource);
+
+					sourceResources.splice(resourceIndex, 1);
+				}
 				sourceColumn.trigger('sort');
+
+				targetColumn.data('resources').push(destination);
 				targetColumn.trigger('sort');
 			}, 1 / 0, false);
 		}
