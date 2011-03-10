@@ -309,6 +309,8 @@ jQuery(function($) {
 
 				if (file.href === root.href) {
 					var resource, undef;
+					var extname = file.name.replace(/^.+\.([^.]+)/, '$1');
+					var type = plupload.mimeTypes[extname];
 
 					$.each(resources, function() {
 						if (this.displayName === file.name) { resource = this; }
@@ -316,12 +318,10 @@ jQuery(function($) {
 					});
 
 					if (resource) {
+						resource.contentType = type || 'application/octet-stream';
 						resource.lastModified = now;
 						resource.contentLength = file.size;
 					} else {
-						var extname = file.name.replace(/^.+\.([^.]+)/, '$1');
-						var type = plupload.mimeTypes[extname];
-
 						resource = $.extend({}, root, {
 							contentLength: file.size,
 							contentType: type || 'application/octet-stream',
