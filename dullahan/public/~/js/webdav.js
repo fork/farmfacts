@@ -5,15 +5,15 @@
 		var resource = this;
 		var $$ = $(response);
 
-		resource.href = $$.find('href').text();
+		resource.href = $$.find('D\\:href, href').text();
 		resource.initializeDisplayName();
 
-		var p = $$.find('prop');
-		resource.contentType   = p.find('getcontenttype').text();
-		resource.contentLength = p.find('getcontentlength').text() * 1;
-		resource.lastModified  = new Date(p.find('getlastmodified').text());
+		var p = $$.find('D\\:prop, prop');
+		resource.contentType   = p.find('D\\:getcontenttype, getcontenttype').text();
+		resource.contentLength = p.find('D\\:getcontentlength, getcontentlength').text() * 1;
+		resource.lastModified  = new Date(p.find('D\\:getlastmodified, getlastmodified').text());
 
-		var collection = p.find('resourcetype').contents().length > 0;
+		var collection = p.find('D\\:resourcetype, resourcetype').contents().length > 0;
 		resource.isCollection = function isCollection() {
 			return collection;
 		};
@@ -117,7 +117,8 @@
 						callback.call(this, request.responseXML);
 					}
 				},
-				dataType: 'text/xml',
+				dataType: 'xml',
+				xhrFields: { withCredentials: true },
 				type: 'PROPFIND',
 				url: uri
 			});
@@ -129,6 +130,7 @@
 						callback.call(this, request.responseXML);
 					}
 				},
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -140,6 +142,7 @@
 					}
 				},
 				type: 'MKCOL',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -151,6 +154,7 @@
 					}
 				},
 				type: 'DELETE',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -172,6 +176,7 @@
 					}
 				},
 				type: 'COPY',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -193,6 +198,7 @@
 					}
 				},
 				type: 'MOVE',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		}
