@@ -446,7 +446,7 @@ jQuery(function($) {
 			var displayName = href.split('/').pop(); // extract new displayName
 			if (resource.isCollection()) { href += '/'; }
 
-			copyTo(resource, href, displayName);
+			transferTo(resource, href, displayName);
 		} else {
 			targetDir = prompt(verb + ' files to:', targetDir);
 			// canceled
@@ -462,7 +462,7 @@ jQuery(function($) {
 				href += displayName;
 				if (resource.isCollection()) { href += '/'; }
 
-				copyTo(resource, href, displayName);
+				transferTo(resource, href, displayName);
 			});
 		}
 	}
