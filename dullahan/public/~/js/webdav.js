@@ -117,7 +117,8 @@
 						callback.call(this, request.responseXML);
 					}
 				},
-				dataType: 'text/xml',
+				dataType: 'xml',
+				xhrFields: { withCredentials: true },
 				type: 'PROPFIND',
 				url: uri
 			});
@@ -129,6 +130,7 @@
 						callback.call(this, request.responseXML);
 					}
 				},
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -140,6 +142,7 @@
 					}
 				},
 				type: 'MKCOL',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -151,6 +154,7 @@
 					}
 				},
 				type: 'DELETE',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -172,6 +176,7 @@
 					}
 				},
 				type: 'COPY',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		},
@@ -193,6 +198,7 @@
 					}
 				},
 				type: 'MOVE',
+				xhrFields: { withCredentials: true },
 				url: url
 			});
 		}
