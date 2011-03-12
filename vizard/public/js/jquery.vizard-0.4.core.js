@@ -120,6 +120,7 @@
 		fn.styleSheets = null;
 		fn.controls    = null;
 
+		// FIXME this is not vizard, move this to custom boot js
 		fn.saveIncludes = function(serialized) {
 			var includes = this.source.match(/<!-- ?# ?include .*-->/g);
 			var host = Vizard.location.protocol + '//' + Vizard.location.host;
@@ -152,7 +153,8 @@
 					dataType: 'text',
 					success: function() {
 						source = source.replace(toRemove, '');
-					}
+					},
+					xhrFields: { withCredentials: true }
 				});
 			}
 			return source;
