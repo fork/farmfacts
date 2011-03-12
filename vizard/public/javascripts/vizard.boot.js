@@ -41,7 +41,7 @@ jQuery(function($) {
 			var quit = $('<a href="http://github.com/fork/farmfacts">');
 			quit.text('Quit Vizard');
 
-			var toolbar = $('#toolbar').
+			var toolbar = $('.toolbar').
 			append(save).
 			append(quit);
 
