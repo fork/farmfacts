@@ -52,6 +52,9 @@ a img { border: none; }
 
 -------------------------------------------------------------- */
 
+body {
+	font-family: Arial, sans-serif; font-size: 14px;
+}
 #display {
 	display: none;
 }
@@ -82,15 +85,6 @@ a img { border: none; }
 	opacity:0.5;
 	filter:alpha(opacity=50);
 	background-color: rgb(255, 0, 0);
-}
-.table-editor td {
-	cursor: pointer;
-	padding: 5px;
-}
-.table-editor input {
-	background-color: transparent;
-	border: none;
-	outline: none;
 }
 .prompt {
 	background: white;
@@ -141,22 +135,57 @@ a img { border: none; }
 	bottom: 0;
 }
 
-#toolbar {
-	background-color: rgb(166,166,166);
-	background-color: rgba(127,127,127,0.5);
+.toolbar {
+	background-color: rgb(166, 166,166);
+	background-color: rgba(127, 127, 127,0.5);
+	border: 1px solid rgb(127, 127, 127);
+	border-color: rgba(127, 127, 127, 0.5);
+	color: gray;
+	height: 22px;
+	padding: 2px 0;
 	position: fixed;
-	height: 32px;
-	top: -24px;
-	right: 0;
-	left: 0;
-	padding: 0 4px;
+	text-align: center;
+	top: -20px;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, .4);
+	width: 100%;
+	z-index: 1;
 }
-#toolbar.active {
-	background-color: rgba(127,127,127,0.85);
+.toolbar.active {
+	background-color: rgba(127,127,127,0.9);
 	top: 0;
 }
-#toolbar a {
-	display: block;
+.toolbar .left {
 	float: left;
-	margin: 2px 4px;
+	margin-left: 2em;
+}
+.toolbar .right {
+	float: right;
+	margin-right: 2em;
+}
+
+.toolbar a {
+	cursor: pointer;
+	margin: auto .5em;
+	color: gold;
+	text-decoration: none;
+}
+.toolbar a:hover {
+	color: khaki;
+	text-decoration: underline;
+}
+.toolbar b {
+	margin: auto .5em;
+	letter-spacing: 1px;
+	color: lightgrey;
+}
+
+/* move section below into custom css */
+.table-editor td {
+	cursor: pointer;
+	padding: 5px;
+}
+.table-editor input {
+	background-color: transparent;
+	border: none;
+	outline: none;
 }
