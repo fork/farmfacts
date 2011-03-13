@@ -6,7 +6,7 @@
 		var $$ = $(response);
 
 		resource.href = $$.find('D\\:href, href').text();
-		resource.initializeDisplayName(); // FIXME prefer displayname
+		resource.initializeDisplayName();
 
 		var p = $$.find('D\\:prop, prop');
 		resource.contentType   = p.find('D\\:getcontenttype, getcontenttype').text();
