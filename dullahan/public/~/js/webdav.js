@@ -6,7 +6,7 @@
 		var $$ = $(response);
 
 		resource.href = $$.find('D\\:href, href').text();
-		resource.initializeDisplayName();
+		resource.initializeDisplayName(); // FIXME prefer displayname
 
 		var p = $$.find('D\\:prop, prop');
 		resource.contentType   = p.find('D\\:getcontenttype, getcontenttype').text();
@@ -19,6 +19,8 @@
 		};
 		if (resource.isCollection()) {
 			resource.contentType = 'directory/directory';
+		} else if (resource.contentType.length === 0) {
+			resource.contentType = 'broken/file';
 		}
 
 		return resource;
