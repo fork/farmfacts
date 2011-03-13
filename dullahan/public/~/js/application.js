@@ -433,10 +433,13 @@ jQuery(function($) {
 					var sourceResources = sourceColumn.data('resources'),
 					    resourceIndex   = sourceResources.indexOf(resource);
 
+					// FIXME only if destination does not target source
 					sourceResources.splice(resourceIndex, 1);
 				}
 				sourceColumn.trigger('sort');
 
+				// FIXME only if destination targets column
+				// TODO change dir if destination does not target column
 				targetColumn.data('resources').push(destination);
 				targetColumn.trigger('sort');
 
@@ -510,7 +513,7 @@ jQuery(function($) {
 					all.splice(index, 1);
 					column.trigger('redraw');
 					if (--count !== 0) { return; }
-					alert('Resource(s) deleted.');
+					//alert('Resource(s) deleted.');
 				});
 			});
 		},
