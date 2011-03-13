@@ -718,7 +718,9 @@ jQuery(function($) {
 	};
 	Controller['application/octet-stream'] = function(url) {
 		// we can apply pattern matching here
-		// if (/.include$/.test(url)) ...
+		if (/(.include|.shtml|.html)$/.test(url)) {
+			return Controller['text/html'](url);
+		}
 
 		window.open(url);
 	};
