@@ -439,6 +439,11 @@ jQuery(function($) {
 
 				targetColumn.data('resources').push(destination);
 				targetColumn.trigger('sort');
+
+				if (0 === --length) {
+					// reload = confirm('Transfer completed, reload now?');
+					// TODO implement reload
+				}
 			}, 1 / 0, false);
 		}
 
