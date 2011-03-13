@@ -85,7 +85,7 @@
 
 		jQuery.ajax(href, {
 			dataType: 'text',
-			success: function(source) {
+			success: function(source, status, jqXHR) {
 				vizard.source = source;
 				vizard.setState(Vizard.LOADED);
 				// This only works for SCRIPT tags with type attribute set:
@@ -93,14 +93,11 @@
 				vizard.source = vizard.source.replace(typesSCRIPTs, noSCRIPTs);
 				vizard.source = vizard.insertBASE(vizard.source);
 
+				vizard.contentType = jqXHR.getResponseHeader('Content-Type');
+
 				vizard.document.open();
 				vizard.document.write(vizard.source);
 				vizard.document.close();
-			},
-			// TODO: check for status code somehow. statusCode() doesnt work...
-			error: function() {
-				var host = Vizard.location.protocol + '//' + Vizard.location.host;
-				location.href = host + '/auth/cas';
 			},
             xhrFields: { withCredentials: true }
 		});

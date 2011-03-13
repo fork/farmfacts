@@ -50,7 +50,7 @@ jQuery(function($) {
 					e.preventDefault();
 
 					jQuery.ajax(this.href, {
-						contentType: 'text/html;charset=utf-8',
+						contentType: V.contentType,
 						type: 'PUT',
 						data: V.saveIncludes(V.serialize()),
 						processData: false,
