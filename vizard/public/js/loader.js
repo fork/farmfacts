@@ -1,4 +1,5 @@
 (function() {
+	// TODO replace loader with DeferJS when it supports .css loading.
 	function Parameters(search) {
 		var pairs = search.slice(1).split('&');
 		var param, value;
@@ -21,6 +22,7 @@
 	var host     = location.pathname.split('/', 2)[1];
 	var params   = new Parameters(location.search);
 
+	// FIXME do not load jQuery from Google
 	var src = protocol + '//ajax.googleapis.com';
 	    src += '/ajax/libs/jquery/1.5.1/jquery.min.js';
 
