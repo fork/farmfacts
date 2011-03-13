@@ -467,7 +467,7 @@ jQuery(function($) {
 
 			targetBase = expandPath(targetDir);
 
-			resources.each(function() {
+			$.each(resources, function() {
 				var resource    = this,
 				    displayName = resource.displayName,
 				    href        = decodeURIComponent(targetBase);
