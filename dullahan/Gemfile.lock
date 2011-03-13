@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:fork/sinatra-webdav.git
-  revision: 3920b40c6a0eba90c2f03e430937e3db2c537025
+  revision: c9af9f9d6530d395dac21da6fe1f1fa384682b2f
   specs:
     sinatra-webdav (0.1.4)
       addressable
@@ -63,7 +63,7 @@ GEM
       oa-oauth (= 0.2.0)
       oa-openid (= 0.2.0)
     pyu-ruby-sasl (0.0.3.2)
-    rack (1.2.1)
+    rack (1.2.2)
     rack-openid (1.2.0)
       rack (>= 1.1.0)
       ruby-openid (>= 2.1.8)
