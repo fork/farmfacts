@@ -98,8 +98,7 @@
 				vizard.document.open();
 				vizard.document.write(vizard.source);
 				vizard.document.close();
-			},
-            xhrFields: { withCredentials: true }
+			}
 		});
 		vizard.setState(Vizard.LOADING);
 
@@ -150,8 +149,7 @@
 					dataType: 'text',
 					success: function() {
 						source = source.replace(toRemove, '');
-					},
-					xhrFields: { withCredentials: true }
+					}
 				});
 			}
 			return source;
