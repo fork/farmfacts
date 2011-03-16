@@ -44,6 +44,7 @@
 		clearInterval(interval);
 
 		require('/js/jquery.simple-toolbar.js');
+		require('/js/xhtml-0.3.min.js');
 		require('/js/jquery.vizard-0.4.core.js').ready(function() {
 			var path = '/' + location.pathname.split('/').slice(2).join('/');
 

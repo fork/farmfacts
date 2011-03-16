@@ -156,22 +156,9 @@
 		};
 
 		fn.serialize = function() {
-			var serializer = new XMLSerializer();
-			//return serializer.serializeToString(this.document.documentElement);
-			// WE ALSO NEED THE DOCTYPE / CHECK IE VERSION BELOW!!!
-			return serializer.serializeToString(this.document);
+			// FIXME only if XHTML
+			return $(this.document).xhtml();
 		};
-
-		if (jQuery.browser.msie) { // ...AAAARGGGHHH!
-			fn.serialize = function() {
-				xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-				xmlDoc.async = false;
-				// Doesn't work!
-				// xmlDoc.appendChild(this.document.documentElement);
-				if (xmlDoc.parseError) { console.log(xmlDoc.parseError.reason); }
-				return xmlDoc.documentElement.xml;
-			};
-		}
 
 		fn.insertBASE = function(html) {
 			var broken = html.split('</title>', 2),
