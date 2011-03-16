@@ -156,11 +156,14 @@
 		};
 
 		fn.serialize = function() {
+			$('base[href="' + this.baseHREF + '"]', this.document).remove();
+
 			// FIXME only if XHTML
 			return $(this.document).xhtml();
 		};
 
 		fn.insertBASE = function(html) {
+			// FIXME only  /> if XHTML
 			var broken = html.split('</title>', 2),
 			    tagBASE = '<base href="' + this.baseHREF + '" />';
 
