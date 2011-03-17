@@ -117,18 +117,19 @@
 		fn.controls    = null;
 
 		// FIXME this is not vizard, move this to custom boot js
+		// FIXME save includes only when modified
 		fn.saveIncludes = function(serialized) {
-			var includes = this.source.match(/<!-- ?# ?include .*-->/g);
+			var includes = this.source.match(/<!-- ?# ?include .*?-->/g);
 			var host = Vizard.location.protocol + '//' + Vizard.location.host;
 			var source = serialized;
 
 			for (i in includes) {
 				var inc = includes[i];
-				var incUrl = inc.match(/="(.*)"/)[1], url;
+				var incUrl = inc.match(/="([^"]+)"/)[1], url;
 
 				var marker = '<!-- end-of src="' + incUrl + '"-->';
 				var stop = source.indexOf(marker);
-				if (stop == -1) continue;
+				if (stop == -1) { continue; }
 				var start = source.lastIndexOf(inc, stop) + inc.length;
 
 				var toPut = source.slice(start, stop);
