@@ -157,16 +157,18 @@
 		};
 
 		fn.serialize = function() {
-			var data;
+			var data = '';
 
 			$('base[href="' + this.baseHREF + '"]', this.document).remove();
 
-			data = '<!DOCTYPE ' + this.doctype.name + ' PUBLIC ' +
-			       '"' + this.doctype.publicId + '" ' +
-			       '"' + v.doctype.systemId + '">\n';
+			if (this.doctype) {
+				data += '<!DOCTYPE ' + this.doctype.name +
+				         ' PUBLIC "' + this.doctype.publicId + '" ' +
+				                 '"' + this.doctype.systemId + '">\n';
+			}
 
 			data += $(this.document).xhtml(); // FIXME only if XHTML
-			data = data.replace(noSCRIPTs, 'type="text/javascript"');
+			data = data.split(noSCRIPTs).join('type="text/javascript"');
 
 			return data;
 		};
