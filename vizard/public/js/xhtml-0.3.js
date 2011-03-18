@@ -37,17 +37,27 @@ if (!window.xhtmljs) {
 			var tagName = el.tagName;
 			var attributes = el.attributes;
 			var childNodes = el.childNodes;
-			var supportsInlineTerminator = true;
+			var supportsInlineTerminator = false;
 
 			if (tagName) {
+				// taken from http://www.w3schools.com/tags/default.asp
 				switch(tagName.toLowerCase()) {
-					case "script":
-					case "a":
-					case "div":
-					supportsInlineTerminator = false;
+					case "area":
+					case "base":
+					case "basefont":
+					case "br":
+					case "col":
+					case "frame":
+					case "hr":
+					case "img":
+					case "input":
+					case "link":
+					case "meta":
+					case "param":
+					supportsInlineTerminator = true;
 					break;
 					default:
-					supportsInlineTerminator = true;
+					supportsInlineTerminator = false;
 					break;
 				}
 			}
