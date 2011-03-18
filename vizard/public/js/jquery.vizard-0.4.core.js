@@ -159,8 +159,12 @@
 		fn.serialize = function() {
 			$('base[href="' + this.baseHREF + '"]', this.document).remove();
 
+			var doctype = '<!DOCTYPE ' + this.doctype.name + ' PUBLIC ' +
+			              '"' + this.doctype.publicId + '" ' +
+			              '"' + v.doctype.systemId + '">\n';
+			
 			// FIXME only if XHTML
-			return $(this.document).xhtml();
+			return doctype + $(this.document).xhtml();
 		};
 
 		fn.insertBASE = function(html) {
