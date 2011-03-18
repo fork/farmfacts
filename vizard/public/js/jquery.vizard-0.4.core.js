@@ -157,14 +157,18 @@
 		};
 
 		fn.serialize = function() {
+			var data;
+
 			$('base[href="' + this.baseHREF + '"]', this.document).remove();
 
-			var doctype = '<!DOCTYPE ' + this.doctype.name + ' PUBLIC ' +
-			              '"' + this.doctype.publicId + '" ' +
-			              '"' + v.doctype.systemId + '">\n';
-			
-			// FIXME only if XHTML
-			return doctype + $(this.document).xhtml();
+			data = '<!DOCTYPE ' + this.doctype.name + ' PUBLIC ' +
+			       '"' + this.doctype.publicId + '" ' +
+			       '"' + v.doctype.systemId + '">\n';
+
+			data += $(this.document).xhtml(); // FIXME only if XHTML
+			data = data.replace(noSCRIPTs, 'type="text/javascript"');
+
+			return data;
 		};
 
 		fn.insertBASE = function(html) {
