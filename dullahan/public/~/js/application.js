@@ -28,7 +28,7 @@ jQuery(function($) {
 	function optionsForBreadcrumb(resource) {
 		var resources = [resource].concat(resource.ancestors());
 		return $.map(resources, function(r) {
-			return Option(r.displayName + '/', r.href);
+			return Option(r.basename, r.href);
 		});
 	}
 	var bytesizeFormatter = utils.Formatter.SI('B');
@@ -39,24 +39,25 @@ jQuery(function($) {
 		var rows = [];
 
 		$.each(resources, function() {
-			var abbr = this.displayName;
+			var abbr = this.basename;
 			if (abbr.length > 60) {
 				var lastDot = abbr.lastIndexOf('.');
 				abbr = abbr.slice(0, 60) + ' ... ' + abbr.slice(lastDot);
 			}
 			var anchor = $('<A>').text(abbr).
-			             attr({href: this.href, title: this.displayName});
+			             attr({href: this.href, title: this.basename});
 			var types  = this.contentType.
 			             replace(/\./g, '-'). // replace non-selectable
 			             replace(/\+/, '/').  // allow application/recipe+xml
 			             split('/').join(' ');
+
 			var row    = Row(types).append(
 				Column(anchor, 'name'),
 				Column(timeFormatter(this.lastModified), 'mtime'),
 				Column(bytesizeFormatter(this.contentLength), 'size'),
 				Column(this.contentType.split('/')[0], 'type')
 			);
-			if (this.displayName.slice(0, 1) == '.') row.addClass('dotfile');
+			if (this.basename.slice(0, 1) == '.') row.addClass('dotfile');
 
 			rows.push(row);
 		});
@@ -122,7 +123,7 @@ jQuery(function($) {
 
 	var columns = $('.column').
 	each(function() {
-		var sorter    = utils.Sorter('displayName');
+		var sorter    = utils.Sorter('basename');
 		var resources = [];
 		var root;
 
@@ -138,12 +139,13 @@ jQuery(function($) {
 			column.trigger('redraw');
 		}).
 		bind('expire', function(e) {
-			resources = column.data('resources');
-			root      = resources.shift();
+			root      = column.data('root');
+			resources = root.getChildren();
 
-			column.trigger('sort');
+			column.data('resources', resources);
 			column.data('href', root.href);
 			column.data('root', root);
+			column.trigger('sort');
 
 			refresh.call(column, root, resources);
 		}).
@@ -313,7 +315,7 @@ jQuery(function($) {
 					    type    = plupload.mimeTypes[extname];
 
 					$.each(resources, function() {
-						if (this.displayName === file.name) { resource = this; }
+						if (this.basename === file.name) { resource = this; }
 						return resource === undef;
 					});
 
@@ -325,7 +327,7 @@ jQuery(function($) {
 						resource = $.extend({}, root, {
 							contentLength: file.size,
 							contentType: type || 'application/octet-stream',
-							displayName: file.name,
+							basename: file.name,
 							href: file.href + file.name,
 							lastModified: now
 						});
@@ -356,31 +358,20 @@ jQuery(function($) {
 
 		$('.location .directory-controls').menu({
 			'.mkcol': function() {
-				// TODO in two column mode:
-				// if resource is visible in alternate column we should do
-				// something about it
-
-				// set active column if other one was active
 				this.parents('.column').click();
-				var column   = columns.filter('.focus');
-				var all      = column.data('resources');
-				var root     = column.data('root');
 
-				var displayName = prompt('Enter directory name:');
-				if (displayName) {
-					var href = decodeURIComponent(root.href);
-					href += displayName;
-					if (!displayName.match(/\/$/)) { href += '/'; }
-
-					var destination = $.extend({}, root, {
-						displayName: displayName,
-						href: href,
-						lastModified: new Date()
-					});
-
-					destination.mkcol(function() {
-						all.push(destination);
+				var basename = prompt('Enter directory name:');
+				if (basename) {
+					function addResource(column, resource) {
+						column.data('resources').push(resource);
 						column.trigger('sort');
+					}
+					root.mkCollection(basename, function(st, err) {
+						if (st === 'success') {
+							columnContains(this, addResource);
+						} else {
+							alert(err);
+						}
 					});
 				}
 			}
@@ -403,84 +394,87 @@ jQuery(function($) {
 	function isExpanded() { return $('#container').hasClass('double'); }
 
 	function transfer(verb, menu) {
-		var sourceColumn = menu.data('column'),
-		    resources    = menu.data('resources'),
-		    countdown    = length = resources.length,
-		    sourceBase   = sourceColumn.data('href');
+		var sourceCol = columns.filter('.focus'),
+		    targetCol = columns.not('.focus'),
+		    source    = sourceCol.data('root'),
+		    target    = targetCol.data('root'),
+		    resources = menu.data('resources');
 
-		var targetColumn = columns.not('.focus'),
-		    targetBase   = targetColumn.data('href'),
-		    targetHost   = targetBase.split('/').slice(0, 3).join('/'),
-		    targetDir    = '/' + targetBase.split('/').slice(3).join('/');
+		function transferTo(resource, uri) {
+			var href = uri.toString(), overwrite = false;
 
-		function expandPath(path) {
-			if (path.slice(0, 1) != '/') {
-				return sourceBase + path;
-			} else {
-				return targetHost + path;
+			function callback(st, href, err) {
+				var destination, sort = $();
+
+				if (st === 'success') {
+					var resources, index;
+					if (verb === 'Move') {
+						columnContains(resource, function(column) {
+							resources = column.data('resources');
+							index     = resources.indexOf(resource);
+
+							if (index > -1) {
+								resources.splice(index, 1);
+								sort = sort.add(column);
+							}
+						});
+					}
+					destination = destination || DAV.Resource.load(href);
+					columnContains(destination, function(column) {
+						if (overwrite) {
+							resources = columns.data('resources');
+							index = $.map(resources, toHRef).indexOf(href);
+							if (index > -1) { resources.splice(index, 1); }
+						}
+						column.data('resources').push(destination);
+						sort = sort.add(column);
+					});
+
+					sort.trigger('sort');
+				} else if (err === 'Precondition Failed') {
+					var confirmed = confirm('Overwrite existing resource?');
+					if (confirmed) {
+						overwrite = true;
+						resource[verb.toLowerCase()](href, overwrite, callback);
+					}
+				}
 			}
-		}
-		function transferTo(resource, href, displayName) {
-			var destination = $.extend({}, resource, {
-				displayName: displayName,
-				href: href,
-				lastModified: new Date()
-			});
-
-			// TODO on 412 confirm overwrite and try again...
-			resource[verb.toLowerCase()](destination.href, function() {
-				if (verb === 'Move') {
-					var sourceResources = sourceColumn.data('resources'),
-					    resourceIndex   = sourceResources.indexOf(resource);
-
-					// FIXME only if destination does not target source
-					sourceResources.splice(resourceIndex, 1);
-				}
-				sourceColumn.trigger('sort');
-
-				// FIXME only if destination targets column
-				// TODO change dir if destination does not target column
-				targetColumn.data('resources').push(destination);
-				targetColumn.trigger('sort');
-
-				if (0 === --length) {
-					// reload = confirm('Transfer completed, reload now?');
-					// TODO implement reload
-				}
-			}, 1 / 0, false);
+			resource[verb.toLowerCase()](href, overwrite, callback);
 		}
 
-		if (length == 1) {
+		var path, uri;
+		if (resources.length == 1) {
 			var resource = resources[0];
 
-			targetPath = targetDir + resource.displayName;
-			targetPath = prompt(verb + ' file to:', targetPath);
-			if (!targetPath) return;
+			uri  = new URI(resource.basename).resolve(target.uri);
+			path = prompt(verb + ' file to:', uri.path);
 
-			href = expandPath(targetPath);
-
-			var displayName = href.split('/').pop(); // extract new displayName
-			if (resource.isCollection()) { href += '/'; }
-
-			transferTo(resource, href, displayName);
+			if (path) {
+				uri = new URI(path).resolve(target.uri);
+				transferTo(resource, uri);
+			}
 		} else {
-			targetDir = prompt(verb + ' files to:', targetDir);
-			// canceled
-			if (!targetDir) { return; }
+			path = prompt(verb + ' files to:', target.uri.path);
 
-			targetBase = expandPath(targetDir);
+			if (path) {
+				var base = new URI(path).resolve(target.uri);
 
-			$.each(resources, function() {
-				var resource    = this,
-				    displayName = resource.displayName,
-				    href        = decodeURIComponent(targetBase);
-
-				href += displayName;
-				if (resource.isCollection()) { href += '/'; }
-
-				transferTo(resource, href, displayName);
-			});
+				$.each(resources, function() {
+					var uri = new URI(this.basename).resolve(base);
+					transferTo(this, uri);
+				});
+			}
 		}
+	}
+
+	function toHRef(resource) { return resource.href; }
+	function columnContains(resource, callback) {
+		columns.filter(':visible').each(function() {
+			var column   = $(this),
+			    hasChild = column.data('root').hasChild(resource.uri);
+
+			if (hasChild) { callback.call(column, column, resource); }
+		});
 	}
 
 	var menu = $('#context-menu').menu({
@@ -494,65 +488,77 @@ jQuery(function($) {
 			Controller(resource.contentType).apply(column, [resource.href]);
 		},
 		'#delete': function() {
-			// TODO in two column mode:
-			// if resource is visible in alternate column we should do
-			// something about it
+			var target    = menu.data('column'),
+			    sibling   = columns.not('.focus'),
+			    resources = menu.data('resources');
 
-			var column    = menu.data('column');
-			var resources = menu.data('resources');
-			var count     = resources.length;
-			var all       = column.data('resources');
+			var unsure = !confirm('Really delete resource(s)?');
+			if (unsure) { return; }
 
-			var sure = confirm('Really delete resource(s)?');
-			if (!sure) return;
+			function removeResource(column, resource) {
+				var all   = column.data('resources'),
+			        index = $.map(all, toHRef).indexOf(resource.href);
 
-			$.each(resources, function() {
-				var resource = this;
-				this.del(function() {
-					var index = all.indexOf(resource);
+				if (index > -1) {
 					all.splice(index, 1);
 					column.trigger('redraw');
-					if (--count !== 0) { return; }
-					//alert('Resource(s) deleted.');
+				}
+			}
+
+			$.each(resources, function() {
+				this.del(function(st, err) {
+					if (st === 'success') {
+						columnContains(this, removeResource);
+					} else {
+						alert(err);
+					}
 				});
 			});
 		},
 		'#duplicate': function() {
-			// TODO in two column mode:
-			// if resource is visible in alternate column we should do
-			// something about it
+			var resources = menu.data('resources'),
+			    all       = menu.data('column').data('resources');
 
-			var column    = menu.data('column');
-			var resources = menu.data('resources');
-			var all       = column.data('resources');
-
-			var allNames  = [];
+			var allNames  = []; // collect names
 			for (var i = 0; i < all.length; i++) {
-				allNames.push(all[i].displayName);
+				allNames.push(all[i].basename);
+			}
+
+			function joinBeforeSlash() {
+				var slashRemoved = false;
+				var basename = Array.prototype.shift.call(arguments);
+
+				if (/\/$/.test(basename)) {
+					slashRemoved = true;
+					basename = basename.slice(0, -1);
+				}
+
+				$.each(arguments, function() { basename += this; });
+				return slashRemoved ? basename + '/' : basename;
 			}
 
 			$.each(resources, function() {
 				var resource    = this;
-				var href        = decodeURIComponent(resource.parent().href);
-				var displayName = basename = resource.displayName + ' Copy';
+				var base        = resource.decoded_uri.parent();
+				var basename    = joinBeforeSlash(resource.basename, ' Copy');
 				var index       = 0;
-				while (allNames.indexOf(displayName) !== -1) {
-					index++;
-					displayName = basename + ' ' + index;
+
+				while (allNames.indexOf(basename) !== -1) {
+					basename = joinBeforeSlash(resource.basename, ' Copy ', ++index);
 				}
-				href += displayName;
-				if (resource.isCollection()) { href += '/'; }
+				var uri = new URI(basename).resolve(base);
 
-				var duplicate = $.extend({}, resource, {
-					displayName: displayName,
-					href: href,
-					lastModified: new Date()
+				this.copy(uri.toString(), false, function(st, href, err) {
+					if (st === 'success') {
+						var copy = DAV.Resource.load(href);
+						columnContains(copy, function(column) {
+							column.data('resources').push(copy);
+							column.trigger('sort');
+						});
+					} else {
+						alert(err);
+					}
 				});
-
-				this.copy(duplicate.href, function() {
-					all.push(duplicate);
-					column.trigger('sort');
-				}, 1 / 0, false);
 			});
 		},
 		'#copy': function() {
@@ -562,31 +568,48 @@ jQuery(function($) {
 			transfer('Move', menu);
 		},
 		'#rename': function() {
-			// TODO in two column mode:
-			// if resource is visible in alternate column we should do
-			// something about it
+			var column    = menu.data('column'),
+			    source    = menu.data('resources')[0],
+			    overwrite = false;
 
-			var column   = menu.data('column');
-			var resource = menu.data('resources')[0];
-			var all      = column.data('resources');
+			var basename = prompt('Enter Filename:', source.basename);
 
-			var displayName = prompt('Enter Filename:', resource.displayName);
-			if (displayName) {
-				var href = decodeURIComponent(resource.parent().href);
-				href += displayName;
-				if (resource.isCollection()) { href += '/'; }
+			if (basename) {
+				var base = source.decoded_uri.parent(),
+			        uri  = new URI(basename).resolve(base);
 
-				var destination = $.extend({}, resource, {
-					displayName: displayName,
-					href: href,
-					lastModified: new Date()
-				});
+				function callback(st, href, err) {
+					if (st === 'success') {
+						var target = DAV.Resource.load(href),
+						    sort = $();
 
-				resource.move(destination.href, function() {
-					var index = all.indexOf(resource);
-					all[index] = destination;
-					column.trigger('sort');
-				}, 1 / 0, false);
+						columnContains(source, function(column, source) {
+							var resources = column.data('resources'),
+							    index     = $.map(resources, toHRef).indexOf(source.href);
+
+							if (index > -1) {
+								resources.splice(index, 1);
+								sort = sort.add(column);
+							}
+						});
+						columnContains(target, function(column, target) {
+							column.data('resources').push(target);
+							sort = sort.add(column);
+						});
+
+						sort.trigger('sort');
+					} else if (err === 'Precondition Failed') {
+						var confirmed = confirm('Overwrite existing resource?');
+						if (confirmed) {
+							overwrite = true;
+							source.move(href, overwrite, callback);
+						}
+					} else {
+						alert(err);
+					}
+				}
+
+				source.move(uri.toString(), overwrite, callback);
 			}
 		},
 		'#get-info': function() {
@@ -722,7 +745,7 @@ jQuery(function($) {
 			return Controller['text/html'](url);
 		}
 
-		window.open(url);
+		return window.open(url);
 	};
 	Controller['text/html'] = function(url) {
 		var path = url.split('/').slice(2).join('/');
@@ -734,28 +757,21 @@ jQuery(function($) {
 	var disabled = '<option disabled="disabled">Loading...</option>';
 	win.bind('hashchange', function(e) {
 		var column = $('.focus');
-		var url = $.bbq.getState('url');
+		var url = $.bbq.getState('url') || location.href;
+
+		// FIXME
 		if (column.data('href') === url) {
 			if (!forceChange) { return; }
 			forceChange = false;
 		}
 
 		column.find('.breadcrumb').html(disabled);
-
-		WebDAV.PROPFIND(url, function(multistatus) {
-			var resources = [];
-			$('D\\:response, response', multistatus).each(function() {
-				var resource = new WebDAV.Resource(this);
-				resources.push(resource);
-			});
-			column.data('resources', resources).trigger('expire');
+		DAV.Resource.load(url, function() {
+			column.data('root', this).trigger('expire');
 		});
 	});
 
 	var log = $('#transcript').
-	//ajaxSend(function(e, xhr, opts) {
-	//	console.log(xhr);
-	//}).
 	ajaxComplete(function(e, xhr, opts) {
 		if (xhr.status == 500) {
 			var win = window.open();
@@ -773,6 +789,7 @@ jQuery(function($) {
 		message = now.valueOf() + ': ' + method.toUpperCase() + ' ' + message;
 		$('<div>').addClass(method).html(message).prependTo(this);
 	};
+	log.GET = function(msg, now) { this.push('get', msg, now); };
 	log.POST = function(msg, now) { this.push('post', msg, now); };
 	log.DELETE = function(msg, now) { this.push('delete', msg, now); };
 	log.COPY = function(msg, now) { this.push('copy', msg, now); };
