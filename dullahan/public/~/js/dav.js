@@ -51,7 +51,7 @@
 				return $(selector, context);
 			}
 			this.uri         = uri;
-			this.decodedURI = uri.decode();
+			this.decodedURI  = uri.decode();
 			this.href        = this.decodedURI.toString();
 			this.basename    = this.decodedURI.basename();
 
@@ -72,9 +72,10 @@
 
 	DAV.Resource.contentType = 'application/octet-stream';
 	DAV.Resource.load = function(href, callback) {
-		var resource, async = callback !== undef;
+		var resource, async = callback !== undef,
+		    decodedHRef = decodeURI(href);
 
-		$.ajax(encodeURI(href), {
+		$.ajax(encodeURI(decodedHRef), {
 			async: async,
 			beforeSend: function(jqXHR) {
 				jqXHR.setRequestHeader('DEPTH', 0);
