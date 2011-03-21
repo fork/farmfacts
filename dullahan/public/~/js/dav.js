@@ -51,9 +51,9 @@
 				return $(selector, context);
 			}
 			this.uri         = uri;
-			this.decoded_uri = uri.decode();
-			this.href        = this.decoded_uri.toString();
-			this.basename    = this.decoded_uri.basename();
+			this.decodedURI = uri.decode();
+			this.href        = this.decodedURI.toString();
+			this.basename    = this.decodedURI.basename();
 
 			this['contentType']   = NS('getcontenttype').text();
 			this['contentLength'] = NS('getcontentlength').text() * 1;
@@ -107,7 +107,7 @@
 
 		def.mkCollection = function(href, callback) {
 			var result, async = callback !== undef;
-			href = new URI(href).resolve(this.decoded_uri).toString();
+			href = new URI(href).resolve(this.decodedURI).toString();
 
 			if (this.isCollection) { href = trailing(href); }
 
@@ -137,11 +137,10 @@
 		// TODO squeeze move and copy DRY
 		def.move = function(href, overwrite, callback) {
 			var result, async = callback !== undef;
-			href = new URI(href).resolve(this.decoded_uri).toString();
+			href = new URI(href).resolve(this.decodedURI).toString();
 			overwrite = overwrite.toString().slice(0, 1).toUpperCase();
 
 			if (this.isCollection) { href = trailing(href); }
-			console.log(this.isCollection, encodeURI(href), this.href);
 
 			$.ajax(encodeURI(this.href), {
 				async: async,
@@ -166,7 +165,7 @@
 		};
 		def.copy = function(href, overwrite, callback) {
 			var result, async = callback !== undef;
-			href = new URI(href).resolve(this.decoded_uri).toString();
+			href = new URI(href).resolve(this.decodedURI).toString();
 			overwrite = overwrite.toString().slice(0, 1).toUpperCase();
 
 			if (this.isCollection) { href = trailing(href); }

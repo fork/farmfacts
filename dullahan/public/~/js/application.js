@@ -446,18 +446,18 @@ jQuery(function($) {
 		if (resources.length == 1) {
 			var resource = resources[0];
 
-			uri  = new URI(resource.basename).resolve(target.uri);
+			uri  = new URI(resource.basename).resolve(target.decodedURI);
 			path = prompt(verb + ' file to:', uri.path);
 
 			if (path) {
-				uri = new URI(path).resolve(target.uri);
+				uri = new URI(path).resolve(target.decodedURI);
 				transferTo(resource, uri);
 			}
 		} else {
-			path = prompt(verb + ' files to:', target.uri.path);
+			path = prompt(verb + ' files to:', target.decodedURI.path);
 
 			if (path) {
-				var base = new URI(path).resolve(target.uri);
+				var base = new URI(path).resolve(target.decodedURI);
 
 				$.each(resources, function() {
 					var uri = new URI(this.basename).resolve(base);
@@ -483,9 +483,9 @@ jQuery(function($) {
 			var resource = menu.data('resources')[0];
 			// RADAR just GET the resource.href for multiple resources in
 			//       seperate windows?
-			// var resources = $(this).data('resources');
-			// $.each(resources, function() { window.open(this.href); });
-			Controller(resource.contentType).apply(column, [resource.href]);
+			var resources = $(this).data('resources');
+			$.each(resources, function() { window.open(this.href); });
+			//Controller(resource.contentType).apply(column, [resource.href]);
 		},
 		'#delete': function() {
 			var target    = menu.data('column'),
@@ -506,7 +506,7 @@ jQuery(function($) {
 			}
 
 			$.each(resources, function() {
-				this.del(function(st, err) {
+				this.del(function(st, r, err) {
 					if (st === 'success') {
 						columnContains(this, removeResource);
 					} else {
@@ -524,27 +524,31 @@ jQuery(function($) {
 				allNames.push(all[i].basename);
 			}
 
+			var shift = Array.prototype.shift;
 			function joinBeforeSlash() {
 				var slashRemoved = false;
-				var basename = Array.prototype.shift.call(arguments);
+				var basename = shift.call(arguments);
 
 				if (/\/$/.test(basename)) {
 					slashRemoved = true;
 					basename = basename.slice(0, -1);
 				}
 
-				$.each(arguments, function() { basename += this; });
+				while (arguments.length > 0) {
+					basename += shift.call(arguments);
+				}
 				return slashRemoved ? basename + '/' : basename;
 			}
 
 			$.each(resources, function() {
-				var resource    = this;
-				var base        = resource.decoded_uri.parent();
-				var basename    = joinBeforeSlash(resource.basename, ' Copy');
-				var index       = 0;
+				var resource  = this,
+				    base      = resource.decodedURI.parent(),
+				    decodedBN = resource.decodedURI.basename(),
+				    basename  = joinBeforeSlash(decodedBN, ' Copy'),
+				    index     = 0;
 
 				while (allNames.indexOf(basename) !== -1) {
-					basename = joinBeforeSlash(resource.basename, ' Copy ', ++index);
+					basename = joinBeforeSlash(decodedBN, ' Copy ', ++index);
 				}
 				var uri = new URI(basename).resolve(base);
 
@@ -575,7 +579,7 @@ jQuery(function($) {
 			var basename = prompt('Enter Filename:', source.basename);
 
 			if (basename) {
-				var base = source.decoded_uri.parent(),
+				var base = source.decodedURI.parent(),
 			        uri  = new URI(basename).resolve(base);
 
 				function callback(st, href, err) {
