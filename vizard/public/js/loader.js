@@ -24,7 +24,7 @@
 
 	// FIXME do not load jQuery from Google
 	var src = protocol + '//ajax.googleapis.com';
-	    src += '/ajax/libs/jquery/1.5.1/jquery.min.js';
+	    src += '/ajax/libs/jquery/1.5.1/jquery.js';
 
 	var script  = document.createElement('script');
 	script.type = 'text/javascript';
