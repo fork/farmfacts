@@ -358,7 +358,7 @@ jQuery(function($) {
 
 		$('.location .directory-controls').menu({
 			'.mkcol': function() {
-				this.parents('.column').click();
+				var root = this.parents('.column').click().data('root');
 
 				var basename = prompt('Enter directory name:');
 				if (basename) {
