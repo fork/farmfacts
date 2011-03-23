@@ -128,7 +128,7 @@
 			}
 
 			data += $(this.document).xhtml(); // FIXME only if XHTML
-			data = data.split(noSCRIPTs).join('type="text/javascript"');
+			data = data.split(noSCRIPTs).join("type='text/javascript'");
 
 			return data;
 		};
