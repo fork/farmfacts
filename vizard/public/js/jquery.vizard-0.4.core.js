@@ -117,9 +117,8 @@
 		fn.controls    = null;
 
 		fn.serialize = function() {
-			var data = '';
-
-			$('base[href="' + this.baseHREF + '"]', this.document).remove();
+			var data = '', baseTag;
+			baseTag = $('base[href="' + this.baseHREF + '"]', this.document);
 
 			if (this.doctype) {
 				data += '<!DOCTYPE ' + this.doctype.name +
@@ -127,7 +126,9 @@
 				                 '"' + this.doctype.systemId + '">\n';
 			}
 
+			baseTag.remove();
 			data += $(this.document).xhtml(); // FIXME only if XHTML
+			$('head', this.document).append(baseTag);
 			data = data.split(noSCRIPTs).join("type='text/javascript'");
 
 			return data;
