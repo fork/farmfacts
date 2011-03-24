@@ -32,11 +32,18 @@
 
 	document.body.appendChild(script);
 
+	var jsExtname = /\.js$/, cssExtname = /\/.css$/;
 	function require(src) {
-		var script = $('<script type="text/javascript">').attr('src', src);
-		$('body').append(script);
+		var req;
+		if (jsExtname.test(src)) {
+			req = $('<script type="text/javascript">').attr('src', src);
+			$('body').append(req);
+		} else if (cssExtname.test(src)) {
+			req = $('<link rel="stylesheet" type="text/css" charset="utf-8">').attr('href', src);
+			$('head').append(req);
+		}
 
-		return script;
+		return req;
 	}
 
 	function boot() {
