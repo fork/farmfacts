@@ -422,9 +422,9 @@ jQuery(function($) {
 					destination = destination || DAV.Resource.load(href);
 					columnContains(destination, function(column) {
 						if (overwrite) {
-							resources = columns.data('resources');
-							index = $.map(resources, toHRef).indexOf(href);
-							if (index > -1) { resources.splice(index, 1); }
+							columnResources = column.data('resources');
+							index = $.map(columnResources, toHRef).indexOf(href);
+							if (index > -1) { columnResources.splice(index, 1); }
 						}
 						column.data('resources').push(destination);
 						sort = sort.add(column);
