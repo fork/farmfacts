@@ -1,5 +1,5 @@
 // RADAR replace loader with DeferJS when it supports .css loading.
-(function() {
+(function($) {
 	function Parameters(search) {
 		var pairs = search.slice(1).split('&');
 		var param, value;
@@ -23,57 +23,40 @@
 	    params    = new Parameters(location.search),
 	    jsExtname = /\.js$/, cssExtname = /\.css$/;
 
-	var script = $('<script type="text/javascript">');
-	script.src = function(src) { return this.clone().attr('src', src); };
-
 	var last, undef;
 
-	function require(src) {
-		var scriptTag = script.src(src);
-
-		if (last !== undef) {
-			scriptTag.after(last);
-		} else {
-			scriptTag.prependTo('body');
-		}
-		last = scriptTag;
-
-		return scriptTag;
-	}
-	function include(src) {
-		var req;
-
+	function require(src, callback) { $.getScript(src, callback); }
+	function include(src, callback) {
 		if (jsExtname.test(src)) {
-			req = script.src(src).appendTo('body');
+			$.getScript(src, callback);
 		} else if (cssExtname.test(src)) {
-			req = $('<link rel="stylesheet" type="text/css" charset="utf-8">');
-			req.attr('href', src).appendTo('head');
+			$('<link rel="stylesheet" type="text/css" charset="utf-8">').
+			attr('href', src).appendTo('head');
 		}
-
-		return req;
 	}
 
 	// export loader functions
-	this.require = require;
-	this.include = include;
+	this.require  = require;
+	this.include  = include;
 
 	require('/js/jquery.simple-toolbar.js');
-	require('/js/xhtml-0.3.min.js');
-	require('/js/jquery.vizard-0.4.core.js').ready(function() {
+	require('/js/jquery.vizard-0.4.core.js', function() {
 		var path = '/' + location.pathname.split('/').slice(2).join('/');
 
 		Vizard.location = {
-			host: host,
+			host:     host,
 			hostname: host.split(':', 1)[0],
-			href: protocol + '//' + host + path,
+			href:     protocol + '//' + host + path,
 			pathname: path,
-			port: host.split(':', 2)[1],
+			port:     host.split(':', 2)[1],
 			protocol: protocol,
+
 			__proto__: location.__proto__
 		};
 		Vizard.params = params;
 
 		require(protocol + '//' + host + params['boot-uri']);
 	});
+	include('/js/xhtml-0.3.min.js');
 
-})();
+})(jQuery);
