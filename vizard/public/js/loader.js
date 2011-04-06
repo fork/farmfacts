@@ -24,7 +24,7 @@
 	    jsExtname = /\.js$/, cssExtname = /\.css$/;
 
 	var script = $('<script type="text/javascript">');
-	script.src = function(src) { return this.dup().attr('src', src); };
+	script.src = function(src) { return this.clone().attr('src', src); };
 
 	var last, undef;
 
