@@ -1,4 +1,4 @@
-// TODO replace loader with DeferJS when it supports .css loading.
+// RADAR replace loader with DeferJS when it supports .css loading.
 (function() {
 	function Parameters(search) {
 		var pairs = search.slice(1).split('&');
