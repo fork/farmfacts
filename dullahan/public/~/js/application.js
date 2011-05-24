@@ -335,6 +335,7 @@ jQuery(function($) {
 							lastModified: now,
 							isCollection: false,
 							uri: newUri,
+							decodedURI: newUri.decode(),
 							parent: root,
 							children: []
 						});
