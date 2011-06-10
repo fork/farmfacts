@@ -40,7 +40,7 @@
 	this.include  = include;
 
 	require('/js/jquery.simple-toolbar.js');
-	require('/js/jquery.vizard-0.4.core.js', function() {
+	require('/js/jquery.vizard-0.5.core.js', function() {
 		var path = '/' + location.pathname.split('/').slice(2).join('/');
 
 		Vizard.location = {
