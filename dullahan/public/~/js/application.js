@@ -324,12 +324,20 @@ jQuery(function($) {
 						resource.lastModified = now;
 						resource.contentLength = file.size;
 					} else {
+						var newUri = $.extend({}, root.uri, {
+							path: root.uri.path + file.name
+						});
 						resource = $.extend({}, root, {
 							contentLength: file.size,
 							contentType: type || 'application/octet-stream',
 							basename: file.name,
 							href: file.href + file.name,
-							lastModified: now
+							lastModified: now,
+							isCollection: false,
+							uri: newUri,
+							decodedURI: newUri.decode(),
+							parent: root,
+							children: []
 						});
 
 						// TODO in two column mode:
