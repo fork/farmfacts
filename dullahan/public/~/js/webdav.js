@@ -14,7 +14,7 @@
 		resource.lastModified  = new Date(p.find('D\\:getlastmodified, getlastmodified').text());
 
 		var collection = p.find('D\\:resourcetype, resourcetype').contents().length > 0;
-		resource.isCollection = function isCollection() {
+		resource.isCollection = function() {
 			return collection;
 		};
 		if (resource.isCollection()) {
@@ -26,23 +26,23 @@
 		return resource;
 	}
 	(function(proto) {
-		proto.isCollection = function isCollection() {
+		proto.isCollection = function() {
 			var value = /\/$/.test(this.href);
 
-			this.isCollection = function isCollection() {
+			this.isCollection = function() {
 				return value;
 			};
 
 			return value;
 		};
-		proto.host = function host() {
+		proto.host = function() {
 			var value = this.href.split('/').slice(0, 3).join('/');
 
-			this.host = function host() { return value; };
+			this.host = function() { return value; };
 
 			return value;
 		};
-		proto.path = function path() {
+		proto.path = function() {
 			var value = '/' + this.href.split('/').slice(3).join('/');
 
 			this.path = function path() { return value; };
@@ -61,7 +61,7 @@
 
 			this.displayName = decodeURI(basename);
 		};
-		proto.ancestors = function ancestors() {
+		proto.ancestors = function() {
 			var value = [];
 			var ancestor = this.parent();
 
@@ -69,11 +69,11 @@
 				value.push(ancestor);
 				ancestor = ancestor.parent();
 			}
-			this.ancestors = function ancestors() { return value; };
+			this.ancestors = function() { return value; };
 
 			return value;
 		};
-		proto.parent = function parent() {
+		proto.parent = function() {
 			if (this.path() === '/') return null;
 
 			var href = this.href.split('/');
@@ -89,13 +89,13 @@
 
 			return value;
 		};
-		proto.copy = function copy(destination, callback, depth, overwrite) {
+		proto.copy = function(destination, callback, depth, overwrite) {
 			WebDAV.COPY(this.href, destination, callback, depth, overwrite);
 		};
-		proto.move = function move(destination, callback, depth, overwrite) {
+		proto.move = function(destination, callback, depth, overwrite) {
 			WebDAV.MOVE(this.href, destination, callback, depth, overwrite);
 		};
-		proto.mkcol = function mkcol(callback) {
+		proto.mkcol = function(callback) {
 			WebDAV.MKCOL(this.href, callback);
 		};
 		proto['delete'] = function(callback) {
