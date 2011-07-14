@@ -30,12 +30,12 @@
 			greater *= -1;
 		};
 		sorter.descending = function descending() {
-			smaller = -1;
-			greater =  1;
-		};
-		sorter.ascending  = function ascending() {
 			smaller =  1;
 			greater = -1;
+		};
+		sorter.ascending  = function ascending() {
+			smaller = -1;
+			greater =  1;
 		};
 		sorter.property   = property;
 
