@@ -245,10 +245,20 @@ table {
 	width: 100%;
 	cursor: pointer;
 }
+th:hover {
+	background-color: gainsboro;
+}
 th {
 	background-color: thistle;
 	padding: 4px 8px;
+	height: 20px;
 	white-space: nowrap;
+}
+th .descending:before {
+	content: "↓ ";
+}
+th .ascending:before {
+	content: "↑ ";
 }
 td {
 	padding: 2px 8px;

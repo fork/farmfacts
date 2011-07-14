@@ -176,16 +176,15 @@ jQuery(function($) {
 			            $(e.target) : $('a', this);
 			var property = anchor.attr('href').slice(1);
 
-			anchors.removeClass('ascending descending');
-
 			if (sorter.property == property) {
 				sorter.reverse();
-				anchor.addClass('descending');
 			} else {
 				sorter.ascending();
 				sorter.property = property;
-				anchor.addClass('ascending');
+				anchor.addClass('descending');
 			}
+			anchor.toggleClass('ascending descending');
+			anchors.not(anchor).removeClass('ascending descending');
 
 			column.trigger('sort');
 			e.preventDefault();
