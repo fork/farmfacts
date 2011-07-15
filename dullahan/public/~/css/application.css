@@ -71,6 +71,38 @@ body.double {
 	width: 240px;
 	overflow-x: hidden;
 }
+#context-menu.active {
+	display: block;
+}
+
+#context-menu li {
+	display: none;
+	width: 100%;
+}
+#context-menu.none.single .none.single,
+#context-menu.none.double .none.double,
+#context-menu.resources.single .resources.single,
+#context-menu.resources.double .resources.double,
+#context-menu.resource.single .resource.single,
+#context-menu.resource.double .resource.double {
+	display: block;
+}
+
+#context-menu a:hover,
+#context-menu a.hover {
+	background-color: dimgrey;
+	color: white;
+}
+#context-menu a {
+	cursor: pointer;
+	display: block;
+	padding: 4px;
+}
+/*IE7 THROWS ERROR IF CLIPBOARD HAS NO DIMENSIONS...*/
+#context-menu #clipboard {
+	width: 1px;
+	height: 1px;
+}
 #context-menu li:first-child a {
 	-moz-border-radius: 5px 5px 0 0;
 	     border-radius: 5px 5px 0 0;
@@ -79,38 +111,6 @@ body.double {
 	-moz-border-radius: 0 0 5px 5px;
 	     border-radius: 0 0 5px 5px;
 }
-#context-menu.active {
-	display: block;
-}
-#context-menu li {
-	width: 100%;
-}
-#context-menu a {
-	cursor: pointer;
-	display: block;
-	padding: 4px;
-}
-#context-menu a:hover,
-#context-menu a.hover {
-	background-color: dimgrey;
-	color: white;
-}
-
-/*IE7 THROWS ERROR IF CLIPBOARD HAS NO DIMENSIONS...*/
-#context-menu #clipboard {
-	width: 1px;
-	height: 1px;
-}
-
-.double #duplicate,
-.single #copy,
-.resources .resource,
-.resource .resources,
-.single .double,
-.double .single {
-	display: none;
-}
-
 #first .expander {
 	position: absolute;
 	right: 0;
@@ -172,7 +172,8 @@ a:hover img.hover {
 	letter-spacing: 1px;
 	margin: 0;
 	position: absolute;
-	top: 0;
+	top: 2px;
+	left: 2px;
 	min-width: 200px;
 	height: 20px;
 }
@@ -193,9 +194,9 @@ a:hover img.hover {
 	background-color: white;
 	position: absolute;
 	letter-spacing: 1px;
-	top: 0;
-	right: 0;
-	padding: 3px 5px;
+	top: 3px;
+	right: 3px;
+	padding: 2px 5px;
 	min-width: 200px;
 	min-height: 14px;
 }
@@ -236,7 +237,7 @@ a:hover img.hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	top: 20px;
+	top: 24px;
 	overflow-y: scroll;
 	position: absolute;
 }
@@ -253,6 +254,9 @@ th {
 	padding: 4px 8px;
 	height: 20px;
 	white-space: nowrap;
+}
+th :before {
+	content: "~ ";
 }
 th .descending:before {
 	content: "↓ ";
@@ -312,20 +316,4 @@ tr.selected * {
 	position: absolute;
 	top: 10px;
 	width: 4px;
-}
-#toolbar {
-	bottom: 12px;
-	right: 10px;
-	position: absolute;
-}
-
-.button {
-	background-color: dimgrey;
-	color: white;
-	cursor: pointer;
-	padding: 4px 8px;
-	text-shadow: 1px 1px 1px #000;
-}
-.button:hover {
-	background-color: gray;
 }

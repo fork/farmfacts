@@ -24,17 +24,17 @@ body#container.single
           tbody
       .location
         select
-        .make-collection
-        .upload
-          #first-plupload
       .type-select
         label for="first-select" Showing: All Files
         select#first-select multiple="multiple"
-        input.pattern type="text"
+        input.pattern.loader type="text"
       .expander
         a title="Enter two-column mode."
           img.hover src="/~/images/expand-hover.png"
           img src="/~/images/expand.png"
+
+    #first-plupload
+      #first-put
 
   form#second.column.hidden
     .margin
@@ -53,40 +53,40 @@ body#container.single
           tbody
       .location
         select
-        .make-collection
-        .upload
-          #second-plupload
       .type-select
         label for="second-select" Showing: All Files
         select#second-select multiple="multiple"
-        input.pattern type="text"
+        input.pattern.loader type="text"
       .expander
         a title="Leave two-column mode."
           img src="/~/images/collapse.png"
           img.hover src="/~/images/collapse-hover.png"
 
+    #second-plupload
+      #second-put
+
   ul#context-menu.shadow
-    li.resource
+    li.single.double.none
+      a#mkcol New Folder
+    li.single.double.none
+      a#put Upload File
+    li.single.double.resource
       a#get-resource Open
-    li.resource
+    li.single.double.none.resource
       hr
-    li
+    li.single.double.resource.resources
       a#delete Delete
-    li
+    li.single.double.resource.resources
       hr
-    li
-      a#get-info Get Info
-    li
-      a#duplicate Duplicate
-    li.double
+    li.double.resource.resources
       a#copy Copy
-    li.double
+    li.double.resource.resources
       a#move Move
-    li.resource
+    li.double.resource.resources
       hr
-    li.resource
+    li.single.double.resource
       a#rename Rename Resource
-    li.resource
+    li.single.double.resource.none
       a#clipboard Copy Path
 
   #transcript.minimized
@@ -95,8 +95,8 @@ body#container.single
     img src="/~/images/logout.png"
     img.hover src="/~/images/logout-hover.png"
 
-script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"
-script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
+script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"
+script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
 script src="/~/js/jquery.ba-bbq.min.js" type="text/javascript"
 script src="/~/js/jquery.right-click.min.js" type="text/javascript"
 script src="/~/js/jquery.menu.min.js" type="text/javascript"
@@ -109,3 +109,9 @@ script src="/~/js/plupload/plupload.min.js" type="text/javascript"
 script src="/~/js/plupload/plupload.html4.min.js" type="text/javascript"
 script src="/~/js/plupload/plupload.html5.min.js" type="text/javascript"
 script src="/~/js/application.js" type="text/javascript"
+
+script type="text/javascript"
+  | plupload.mimeTypes['shtml'] = 'text/html';
+  | plupload.mimeTypes['include'] = 'text/html';
+  | plupload.mimeTypes['css'] = 'text/css';
+  | plupload.mimeTypes['js'] = 'text/javascript';

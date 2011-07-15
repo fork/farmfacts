@@ -266,27 +266,27 @@ jQuery(function($) {
 			var rows      = tbody.children().removeClass('active');
 			var row       = rows.has(e.target);
 			var selected  = rows.filter('.selected');
-			var context   = [];
+			var targets   = [];
 
 			if (selected.has(e.target).length > 0) {
 				// selected are clicked
 				selected.filter(':visible').each(function() {
 					var index = rows.index(this);
-					context.push(resources[index]);
+					targets.push(resources[index]);
 				}).addClass('active');
 			} else if (row.length > 0) {
 				// another resource was clicked
 				var index = tbody.children().index(row);
-				context.push(resources[index]);
+				targets.push(resources[index]);
 				row.addClass('active');
 			} else {
 				// empty space was clicked
-				context.push(root);
+				// context.push(root);
 			}
 
 			var position = fixPosition({ top: e.clientY, left: e.clientX });
 
-			menu.data({resources: context, column: column}).
+			menu.data({ context: root, resources: targets, column: column }).
 			one('activate', function() { menu.css(position); }).
 			one('deactivate', function() { rows.removeClass('active'); }).
 			menu().activate();
@@ -294,13 +294,10 @@ jQuery(function($) {
 
 		var uploader = new plupload.Uploader({
 			container: column.attr('id') + '-plupload',
-			runtimes: 'html5,html4',
-			browse_button: column.attr('id') + '-html4upload',
+			runtimes: 'html5',
+			browse_button: column.attr('id') + '-put',
 			drop_element: column.attr('id')
 		});
-		//uploader.bind('Error', function(up, err) { console.log('error'); });
-		//uploader.bind('Init', function(up, res) { console.log('init'); });
-		//uploader.bind('StateChanged', function() { console.log('state-changed'); });
 		uploader.bind('FileUploaded', function(up, file) {
 			var message = file.href + file.name;
 			var now = new Date();
@@ -353,36 +350,13 @@ jQuery(function($) {
 			}
 		});
 		uploader.bind('FilesAdded', function(up, files) {
-			//console.log('files-added');
 			up.settings.url = root.href;
 			$.each(files, function() { this.href = root.href; });
 		});
 		uploader.bind('QueueChanged', function(up) {
-			//console.log('queue-changed');
 			if (up.state !== plupload.STARTED) { up.start(); }
 		});
 		uploader.init();
-
-		$('.location .directory-controls').menu({
-			'.mkcol': function() {
-				var root = this.parents('.column').click().data('root');
-
-				var basename = prompt('Enter directory name:');
-				if (basename) {
-					function addResource(column, resource) {
-						column.data('resources').push(resource);
-						column.trigger('sort');
-					}
-					root.mkCollection(basename, function(st, err) {
-						if (st === 'success') {
-							columnContains(this, addResource);
-						} else {
-							alert(err);
-						}
-					});
-				}
-			}
-		});
 	});
 
 	// moves menu to another position if it'd overflow the window limits
@@ -485,6 +459,28 @@ jQuery(function($) {
 	}
 
 	var menu = $('#context-menu').menu({
+		'#mkcol': function() {
+			var root = menu.data('context');
+
+			var basename = prompt('Enter directory name:');
+			if (basename) {
+				function addResource(column, resource) {
+					column.data('resources').push(resource);
+					column.trigger('sort');
+				}
+				root.mkCollection(basename, function(st, err) {
+					if (st === 'success') {
+						columnContains(this, addResource);
+					} else {
+						alert(err);
+					}
+				});
+			}
+		},
+		'#put': function() {
+			var inputId = '#' + menu.data('column').attr('id') + '-plupload input';
+			$(inputId).click();
+		},
 		'#get-resource': function() {
 			var column = menu.data('column');
 			var resource = menu.data('resources')[0];
@@ -632,18 +628,26 @@ jQuery(function($) {
 		var singular  = resources.length === 1;
 
 		clipboard.css({width: 'auto', height: 'auto'});
-		menu.removeClass('resources resource single double');
-
+		menu.removeClass('none resource resources single double');
 		menu.addClass(half ? 'double' : 'single');
 
-		if (singular) {
-			menu.addClass('resource');
-			setTimeout(function() {
-				clipboard.zeroclipboard({ text: resources[0].path() });
-			}, 100);
-		}
-		else {
-			menu.addClass('resources');
+		switch (resources.length) {
+			case 0:
+				menu.addClass('none');
+
+				setTimeout(function() {
+					clipboard.zeroclipboard({ text: menu.data('context').path() });
+				}, 100);
+				break;
+			case 1:
+				menu.addClass('resource');
+
+				setTimeout(function() {
+					clipboard.zeroclipboard({ text: resources[0].path() });
+				}, 100);
+				break;
+			default:
+				menu.addClass('resources');
 		}
 	}).bind('deactivate', function() {
 		clipboard.css({width: 1, height: 1});
