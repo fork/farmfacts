@@ -169,6 +169,11 @@ jQuery(function($) {
 			// TODO set Filter label to Some Files...
 		});
 
+		$('.reload', column).click(function() {
+			forceChange = true;
+			win.trigger('hashchange');
+		});
+
 		var anchors = column.find('th a');
 		column.find('th').
 		click(function(e) {

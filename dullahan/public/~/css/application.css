@@ -19,7 +19,7 @@ body.double {
 	min-width: 960px;
 }
 .column {
-	background-color: plum;
+	background-color: grey;
 	/* make position !important because PLUpload goes relative in Safari... */
 	position: absolute !important;
 	top: 0;
@@ -63,7 +63,7 @@ body.double {
 	-moz-border-radius: 5px;
 	     border-radius: 5px;
 	display: none;
-	background-color: thistle;
+	background-color: gainsboro;
 	position: absolute;
 	list-style-type: none;
 	margin: 0;
@@ -90,7 +90,7 @@ body.double {
 
 #context-menu a:hover,
 #context-menu a.hover {
-	background-color: dimgrey;
+	background-color: darkred;
 	color: white;
 }
 #context-menu a {
@@ -164,6 +164,11 @@ a:hover img.hover {
 	width: 24px;
 }
 
+.location {
+	position: absolute;
+	left: 0;
+	right: 252px;
+}
 .location select {
 	cursor: pointer;
 	outline: 0;
@@ -172,13 +177,28 @@ a:hover img.hover {
 	letter-spacing: 1px;
 	margin: 0;
 	position: absolute;
-	top: 2px;
-	left: 2px;
-	min-width: 200px;
+	top: 7px;
+	left: 7px;
+	width: 100%;
 	height: 20px;
 }
 .location select option {
 	padding: 2px 5px;
+}
+.reload {
+	cursor: pointer;
+	display: block;
+	margin: 0;
+	padding: 0;
+	padding: 2px 5px;
+	position: absolute;
+	top: 7px;
+	right: 220px;
+	width: 12px;
+	text-align: center;
+	-moz-border-radius: 5px;
+	     border-radius: 5px;
+	background-color: white;
 }
 
 .directory-controls {
@@ -191,18 +211,20 @@ a:hover img.hover {
 }
 
 .type-select {
+	-moz-border-radius: 5px;
+	     border-radius: 5px;
 	background-color: white;
 	position: absolute;
 	letter-spacing: 1px;
-	top: 3px;
-	right: 3px;
+	top: 7px;
+	right: 7px;
 	padding: 2px 5px;
 	min-width: 200px;
-	min-height: 14px;
+	min-height: 13px;
 }
 .type-select.active {
-	border-left: 2px solid plum;
-	border-bottom: 2px solid plum;
+	border-left: 2px solid darkred;
+	border-bottom: 2px solid darkred;
 }
 .type-select label {
 	cursor: pointer;
@@ -237,7 +259,7 @@ a:hover img.hover {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	top: 24px;
+	top: 32px;
 	overflow-y: scroll;
 	position: absolute;
 }
@@ -246,23 +268,26 @@ table {
 	width: 100%;
 	cursor: pointer;
 }
-th:hover {
-	background-color: gainsboro;
+.data th:hover {
+	background-color: dimgrey;
 }
-th {
-	background-color: thistle;
-	padding: 4px 8px;
+.data th {
+	background-color: firebrick;
+	padding: 4px 8px 4px 0;
 	height: 20px;
 	white-space: nowrap;
 }
-th :before {
-	content: "~ ";
+th .descending {
+	background-image: url('/~/images/descending.png');
 }
-th .descending:before {
-	content: "↓ ";
+th .ascending {
+	background-image: url('/~/images/ascending.png');
 }
-th .ascending:before {
-	content: "↑ ";
+th a {
+	padding-left: 24px;
+	color: white;
+	background-position: 6px 2px;
+	background-repeat: no-repeat;
 }
 td {
 	padding: 2px 8px;
@@ -274,7 +299,7 @@ tbody tr {
 }
 tr.active,
 tr.active:hover {
-	background-color: darkorchid !important;
+	background-color: darkred !important;
 }
 tr.selected,
 tr.selected:hover {
