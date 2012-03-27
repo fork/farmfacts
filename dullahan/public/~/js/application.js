@@ -299,7 +299,7 @@ jQuery(function($) {
 
 		var uploader = new plupload.Uploader({
 			container: column.attr('id') + '-plupload',
-			runtimes: 'html5',
+			runtimes: 'html5,html4',
 			browse_button: column.attr('id') + '-put',
 			drop_element: column.attr('id')
 		});
