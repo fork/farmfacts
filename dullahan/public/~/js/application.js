@@ -297,12 +297,15 @@ jQuery(function($) {
 			menu().activate();
 		});
 
-		var uploader = new plupload.Uploader({
-			container: column.attr('id') + '-plupload',
-			runtimes: 'html5',
-			browse_button: column.attr('id') + '-put',
-			drop_element: column.attr('id')
-		});
+		var pluploadConfig = {
+                        container: column.attr('id') + '-plupload',
+                        runtimes: 'html5,html4',
+                        drop_element: column.attr('id')
+        }; 
+		if (!$.browser.msie)
+			$.extend(pluploadConfig, { browse_button: column.attr('id') + '-put' });
+
+		var uploader = new plupload.Uploader(pluploadConfig);
 		uploader.bind('FileUploaded', function(up, file) {
 			var message = file.href + file.name;
 			var now = new Date();
@@ -353,6 +356,8 @@ jQuery(function($) {
 			} else {
 				log.POST(message + ' => Conflict', now);
 			}
+
+			fixIEUpload();
 		});
 		uploader.bind('FilesAdded', function(up, files) {
 			up.settings.url = root.href;
@@ -362,8 +367,18 @@ jQuery(function($) {
 			if (up.state !== plupload.STARTED) { up.start(); }
 		});
 		uploader.init();
+
+		fixIEUpload();
 	});
 
+	function fixIEUpload() {
+		if (!$.browser.msie) return;
+
+		$('#context-menu li:has(a#put)').hide();
+		$('#first-plupload form, #second-plupload form')
+		.attr('style', 'width: 200px; top: 36px; position: absolute; left: 70px;')
+		.find('input').attr('style', '');
+	}
 	// moves menu to another position if it'd overflow the window limits
 	function fixPosition(position) {
 		var width = menu.outerWidth();
