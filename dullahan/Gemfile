@@ -1,4 +1,6 @@
-gem 'sinatra-webdav', :git => 'git@github.com:fork/sinatra-webdav.git'
+source :rubygems
+
+gem 'sinatra-webdav', :git => 'git@github.com:fork/sinatra-webdav.git', :tag => 'v0.1.7'
 
 gem 'omniauth'
 gem 'hoptoad_notifier'

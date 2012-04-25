@@ -301,7 +301,7 @@ jQuery(function($) {
                         container: column.attr('id') + '-plupload',
                         runtimes: 'html5,html4',
                         drop_element: column.attr('id')
-        }; 
+        };
 		if (!$.browser.msie)
 			$.extend(pluploadConfig, { browse_button: column.attr('id') + '-put' });
 
