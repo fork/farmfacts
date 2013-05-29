@@ -5,7 +5,8 @@ jQuery(function($) {
 	function Option(text, value, selected) {
 		var option = OPTION.clone();
 		option.context = document;
-		option.text(text).attr('value', value || text);
+		option.attr('value', value || text);
+		option.text(text);
 		if (selected) { option.attr('selected', 'selected'); }
 		return option;
 	}
@@ -25,10 +26,12 @@ jQuery(function($) {
 		return ROW.clone().addClass(type);
 	}
 
-	function optionsForBreadcrumb(resource) {
-		var resources = [resource].concat(resource.ancestors());
-		return $.map(resources, function(r) {
-			return Option(r.basename, r.href);
+	function optionsForBreadcrumb(resource, element) {
+		resource.ancestors(function(graph){
+			var resources = [resource].concat(graph);
+			$.each(resources, function() {
+				element.append(Option(this.basename, this.href));
+			});
 		});
 	}
 	var bytesizeFormatter = utils.Formatter.SI('B');
@@ -61,7 +64,6 @@ jQuery(function($) {
 
 			rows.push(row);
 		});
-
 		return rows;
 	}
 	function optionsForTypeSelect(resources) {
@@ -110,9 +112,7 @@ jQuery(function($) {
 		select.change();
 
 		breadcrumb = this.find('.location select').empty();
-		$.each(optionsForBreadcrumb(root), function() {
-			breadcrumb.append(this);
-		});
+		optionsForBreadcrumb(root, breadcrumb);
 	}
 
 	$('.location select').change(function() {
@@ -140,14 +140,15 @@ jQuery(function($) {
 		}).
 		bind('expire', function(e) {
 			root      = column.data('root');
-			resources = root.getChildren();
-
-			column.data('resources', resources);
-			column.data('href', root.href);
-			column.data('root', root);
-			column.trigger('sort');
-
-			refresh.call(column, root, resources);
+			
+			root.getChildren(function(collection){
+			  resources = collection;
+			  column.data('resources', resources);
+			  column.data('href', root.href);
+  			column.data('root', root);
+			  column.trigger('sort');
+			  refresh.call(column, root, resources);
+			});
 		}).
 		bind('focus', function(e) {
 			var focused = column.is('.focus');
@@ -420,18 +421,20 @@ jQuery(function($) {
 							}
 						});
 					}
-					destination = destination || DAV.Resource.load(href);
-					columnContains(destination, function(column) {
-						if (overwrite) {
-							columnResources = column.data('resources');
-							index = $.map(columnResources, toHRef).indexOf(href);
-							if (index > -1) { columnResources.splice(index, 1); }
-						}
-						column.data('resources').push(destination);
-						sort = sort.add(column);
+					DAV.Resource.load(href, function(){
+						var destination = this;
+						columnContains(destination, function(column, destination) {
+							if (overwrite) {
+								columnResources = column.data('resources');
+								index = $.map(columnResources, toHRef).indexOf(href);
+								if (index > -1) { columnResources.splice(index, 1); }
+							}
+							column.data('resources').push(destination);
+							sort = sort.add(column);
+						});
+						sort.trigger('sort');
 					});
-
-					sort.trigger('sort');
+					
 				} else if (err === 'Precondition Failed') {
 					var confirmed = confirm('Overwrite existing resource?');
 					if (confirmed) {
@@ -577,11 +580,14 @@ jQuery(function($) {
 
 				this.copy(uri.toString(), false, function(st, href, err) {
 					if (st === 'success') {
-						var copy = DAV.Resource.load(href);
-						columnContains(copy, function(column) {
-							column.data('resources').push(copy);
-							column.trigger('sort');
+						DAV.Resource.load(href, function(){
+							var copy = this;
+							columnContains(copy, function(column, copy) {
+								column.data('resources').push(copy);
+								column.trigger('sort');
+							});
 						});
+
 					} else {
 						alert(err);
 					}
@@ -598,7 +604,7 @@ jQuery(function($) {
 			var column    = menu.data('column'),
 			    source    = menu.data('resources')[0],
 			    overwrite = false;
-
+			
 			var basename = prompt('Enter Filename:', source.basename);
 
 			if (basename) {
@@ -607,9 +613,7 @@ jQuery(function($) {
 
 				function callback(st, href, err) {
 					if (st === 'success') {
-						var target = DAV.Resource.load(href),
-						    sort = $();
-
+						var sort = $();
 						columnContains(source, function(column, source) {
 							var resources = column.data('resources'),
 							    index     = $.map(resources, toHRef).indexOf(source.href);
@@ -619,12 +623,16 @@ jQuery(function($) {
 								sort = sort.add(column);
 							}
 						});
-						columnContains(target, function(column, target) {
-							column.data('resources').push(target);
-							sort = sort.add(column);
+						
+						DAV.Resource.load(href, function() {
+							var target = this;
+							columnContains(target, function(column, target) {
+								column.data('resources').push(target);
+								sort = sort.add(column);
+							});
+							sort.trigger('sort');
 						});
 
-						sort.trigger('sort');
 					} else if (err === 'Precondition Failed') {
 						var confirmed = confirm('Overwrite existing resource?');
 						if (confirmed) {

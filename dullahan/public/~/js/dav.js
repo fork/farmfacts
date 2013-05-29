@@ -214,15 +214,17 @@
 			return result;
 		};
 
-		def.loadParent = function() {
+		def.loadParent = function(callback) {
+		  var async = callback !== undef;
 			if (this.uri.dirname() === this.uri.path) {
 				this.parent = this;
+				if (callback) { callback.call(this, this.parent); }
 			} else {
 				var uri  = new URI(this.uri.dirname()).resolve(this.uri),
 				    href = uri.toString();
 
 				$.ajax(encodeURI(href), {
-					async: false,
+					async: async,
 					beforeSend: function(jqXHR) {
 						jqXHR.setRequestHeader('DEPTH', 0);
 					},
@@ -233,35 +235,43 @@
 						    resource = new DAV.Resource(uri, response);
 
 						this.parent = resource;
+						if (callback) { callback.call(this, this.parent); }
 					},
 					type: 'PROPFIND'
 				});
 			}
 		};
-		def.getParent = function() {
-			if (this.parent === undef) { this.loadParent(); }
-			return this.parent;
-		};
-		def.ancestors = function() {
-			var graph = [];
-			var last = this, ancestor = last.getParent();
-
-			while (ancestor.href !== last.href) {
-				graph.push(ancestor);
-
-				last     = ancestor;
-				ancestor = last.getParent();
+		def.getParent = function(callback) {
+			if (this.parent === undef) { 
+			  this.loadParent(callback);
+			}else{
+			  callback.call(this);
 			}
-
-			return graph;
+		};
+		def.ancestor = function(graph, last, callback) {
+			ancestor = last;
+			last.getParent(function(ancestor){
+				if (ancestor.href !== last.href) {
+					graph.push(ancestor);
+					last = ancestor;
+					def.ancestor(graph, last, callback);
+				} else {
+					callback.call(this, graph);
+				}
+			});
+		};
+		def.ancestors = function(callback) {
+			var graph = [], last = this;
+			def.ancestor(graph, last, callback);
 		};
 
-		def.loadChildren = function() {
+		def.loadChildren = function(callback) {
+		  var async = callback !== undef;
 			this.children = [];
 			if (!this.isCollection) { return; }
 
 			$.ajax(encodeURI(this.href), {
-				async: false,
+				async: async,
 				beforeSend: function(jqXHR) {
 					jqXHR.setRequestHeader('DEPTH', 1);
 				},
@@ -269,24 +279,27 @@
 				dataType: 'xml',
 				success: function(multi) {
 					var parent = this, collection = this.children;
-
 					$(D('response'), multi).filter(':gt(0)').
 					each(function() {
 						var href = $(D('href'), this).text(),
-						    uri = new URI(href),
-						    resource = new DAV.Resource(uri, this);
+								uri = new URI(href),
+								resource = new DAV.Resource(uri, this);
 
 						resource.parent = parent;
-
 						collection.push(resource);
 					});
+
+					if (callback) { callback.call(this, collection); }
 				},
 				type: 'PROPFIND'
 			});
 		};
-		def.getChildren = function() {
-			if (this.children === undef) { this.loadChildren(); }
-			return this.children;
+		def.getChildren = function(callback) {
+			if (this.children === undef) { 
+			  this.loadChildren(callback);
+			}else{
+			  callback.call(this, collection);
+			}
 		};
 
 	})(DAV.Resource.prototype);
