@@ -26,7 +26,7 @@
 	})(URI.prototype);
 
 	var infinity = (1 / 0).toString().toLowerCase(),
-	    undef, trailingSlash = /\/$/;
+	    trailingSlash = /\/$/;
 
 	function D(selector) { return 'D\\:' + selector + ', ' + selector; }
 	function trailing(href, slash) {
@@ -72,11 +72,10 @@
 
 	DAV.Resource.contentType = 'application/octet-stream';
 	DAV.Resource.load = function(href, callback) {
-		var resource, async = callback !== undef,
+		var resource,
 		    decodedHRef = decodeURI(href);
 
 		$.ajax(encodeURI(decodedHRef), {
-			async: async,
 			beforeSend: function(jqXHR) {
 				jqXHR.setRequestHeader('DEPTH', 0);
 			},
@@ -107,20 +106,19 @@
 		};
 
 		def.mkCollection = function(href, callback) {
-			var result, async = callback !== undef;
+			var result;
 			href = new URI(href).resolve(this.decodedURI).toString();
 
 			if (this.isCollection) { href = trailing(href); }
 
 			$.ajax(encodeURI(href), {
-				async: async,
 				context: this,
 				error: function(jqXHR, status, error) {
 					if (callback) { callback.call(this, status, error); }
 					else { result = false; }
 				},
 				success: function(data, status, jqXHR) {
-					this.children = undef; // force reload
+					this.children = null; // force reload
 					parent = this;
 
 					DAV.Resource.load(href, function() {
@@ -137,14 +135,13 @@
 		};
 		// TODO squeeze move and copy DRY
 		def.move = function(href, overwrite, callback) {
-			var result, async = callback !== undef;
+			var result;
 			href = new URI(href).resolve(this.decodedURI).toString();
 			overwrite = overwrite.toString().slice(0, 1).toUpperCase();
 
 			if (this.isCollection) { href = trailing(href); }
 
 			$.ajax(encodeURI(this.href), {
-				async: async,
 				beforeSend: function(jqXHR) {
 					jqXHR.setRequestHeader('DEPTH', infinity);
 					jqXHR.setRequestHeader('DESTINATION', href);
@@ -165,14 +162,13 @@
 			return result;
 		};
 		def.copy = function(href, overwrite, callback) {
-			var result, async = callback !== undef;
+			var result;
 			href = new URI(href).resolve(this.decodedURI).toString();
 			overwrite = overwrite.toString().slice(0, 1).toUpperCase();
 
 			if (this.isCollection) { href = trailing(href); }
 
 			$.ajax(encodeURI(this.href), {
-				async: async,
 				beforeSend: function(jqXHR) {
 					jqXHR.setRequestHeader('DEPTH', infinity);
 					jqXHR.setRequestHeader('DESTINATION', href);
@@ -193,17 +189,16 @@
 			return result;
 		};
 		def.del = function(callback) {
-			var result, async = callback !== undef;
+			var result;
 
 			$.ajax(encodeURI(this.href), {
-				async: async,
 				context: this,
 				error: function(jqXHR, status, error) {
 					if (callback) { callback.call(this, status, this, error); }
 					else { result = false; }
 				},
 				success: function(data, status, jqXHR) {
-					if (this.parent) { this.parent.children = undef; }
+					if (this.parent) { this.parent.children = null; }
 
 					if (callback) { callback.call(this, status, this); }
 					else { result = true; }
@@ -215,7 +210,6 @@
 		};
 
 		def.loadParent = function(callback) {
-		  var async = callback !== undef;
 			if (this.uri.dirname() === this.uri.path) {
 				this.parent = this;
 				if (callback) { callback.call(this, this.parent); }
@@ -224,7 +218,6 @@
 				    href = uri.toString();
 
 				$.ajax(encodeURI(href), {
-					async: async,
 					beforeSend: function(jqXHR) {
 						jqXHR.setRequestHeader('DEPTH', 0);
 					},
@@ -242,11 +235,7 @@
 			}
 		};
 		def.getParent = function(callback) {
-			if (this.parent === undef) { 
-			  this.loadParent(callback);
-			}else{
-			  callback.call(this);
-			}
+			this.loadParent(callback);
 		};
 		def.ancestor = function(graph, last, callback) {
 			ancestor = last;
@@ -266,12 +255,10 @@
 		};
 
 		def.loadChildren = function(callback) {
-		  var async = callback !== undef;
 			this.children = [];
 			if (!this.isCollection) { return; }
 
 			$.ajax(encodeURI(this.href), {
-				async: async,
 				beforeSend: function(jqXHR) {
 					jqXHR.setRequestHeader('DEPTH', 1);
 				},
@@ -295,11 +282,7 @@
 			});
 		};
 		def.getChildren = function(callback) {
-			if (this.children === undef) { 
-			  this.loadChildren(callback);
-			}else{
-			  callback.call(this, collection);
-			}
+			this.loadChildren(callback);
 		};
 
 	})(DAV.Resource.prototype);

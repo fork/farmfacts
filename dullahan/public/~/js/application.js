@@ -315,13 +315,14 @@ jQuery(function($) {
 				log.POST(message + ' => Created', now);
 
 				if (file.href === root.href) {
-					var resource, undef,
+					var resource,
 					    extname = file.name.replace(/^.+\.([^.]+)/, '$1'),
 					    type    = plupload.mimeTypes[extname];
-
 					$.each(resources, function() {
-						if (this.basename === file.name) { resource = this; }
-						return resource === undef;
+						if (this.basename === file.name) { 
+							resource = this; 
+							return false; 
+						}
 					});
 
 					if (resource) {
